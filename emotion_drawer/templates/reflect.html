@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}{{ R.title }} — 감정서랍{% endblock %}
+
+{% block content %}
+<section class="section page reflect">
+  <div class="container container--narrow">
+    <p class="page__back-top"><a href="{{ url_for('drawer.index') }}">← {{ c.DRAWER.back }}</a></p>
+    <h1 class="page__title">{{ R.title }}</h1>
+
+    {% if total < 3 %}
+      {# F5-1 #}
+      <p class="reflect__notice">{{ R.need_more.format(n=total) }}</p>
+      <p><a class="btn btn--primary" href="{{ url_for('drawer.new') }}">{{ c.DRAWER.new }}</a></p>
+    {% else %}
+
+      {# 기간 선택 (F5-4): 30일 외에는 Plus #}
+      <nav class="periods" aria-label="기간">
+        {% for p in periods %}
+          {% set is_plus_period = p != free_period %}
+          <a class="period {% if p == period %}is-active{% endif %}"
+             href="{{ url_for('reflect.index', days=p) }}"
+             {% if p == period %}aria-current="page"{% endif %}>
+            {% if is_plus_period and not plan.is_plus %}<span aria-hidden="true">🔒 </span>{% endif %}{{ R.periods[p] }}
+          </a>
+        {% endfor %}
+      </nav>
+      {% if not plan.is_plus %}<p class="lock-note">({{ R.plus_note }})</p>{% endif %}
+
+      {% if locked %}
+        {# F6-3, F6-4: 체험이 끝난 뒤 Plus 기간을 요청하면 잠금 #}
+        <div class="lock-panel">
+          <p>🔒 {{ c.DRAWER.plus_locked }}</p>
+          <a class="btn btn--ghost btn--sm" href="{{ url_for('reflect.index') }}">{{ R.back_to_30 }}</a>
+        </div>
+      {% else %}
+        <section class="reflect__block" aria-labelledby="counts-title">
+          <h2 class="reflect__subtitle" id="counts-title">{{ R.counts_title }}</h2>
+          {% if counts %}
+            <p class="reflect__summary">{{ summary }}</p>
+            <ul class="bars">
+              {% for row in counts %}
+              <li class="bar">
+                <span class="bar__label">{{ row.label }}</span>
+                <span class="bar__track" aria-hidden="true"><span class="bar__fill" style="width: {{ row.width }}%"></span></span>
+                <span class="bar__count">{{ row.cnt }}</span>
+              </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="reflect__notice">{{ R.period_empty }}</p>
+          {% endif %}
+        </section>
+
+        <section class="reflect__block" aria-labelledby="pattern-title">
+          <h2 class="reflect__subtitle" id="pattern-title">{{ R.pattern_title }}</h2>
+          {% if pattern_lines %}
+            <ul class="pattern-list">
+              {% for line in pattern_lines %}<li>{{ line }}</li>{% endfor %}
+            </ul>
+          {% else %}
+            <p class="reflect__notice">{{ R.pattern_empty }}</p>
+          {% endif %}
+        </section>
+      {% endif %}
+    {% endif %}
+
+    {# F5-6: 항상 보이는 안내 + F8 위기 안내 #}
+    <div class="reflect__footer">
+      <p>{{ R.footer }}</p>
+      <p>{% include "partials/crisis_link.html" %}</p>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+{% if bucket %}
+<script>window.track("reflect_view", { entry_count_bucket: {{ bucket|tojson }} });</script>
+{% endif %}
+{% endblock %}

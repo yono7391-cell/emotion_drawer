@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% set A = c.AUTH %}
+
+{% block title %}{{ A.signup_title }} — 감정서랍{% endblock %}
+
+{% block content %}
+<section class="section page">
+  <div class="container container--narrow auth">
+    <h1 class="page__title">{{ A.signup_title }}</h1>
+
+    <form method="post" action="{{ url_for('auth.signup') }}" class="form" novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {% if form.from_try %}<input type="hidden" name="from" value="try">{% endif %}
+
+      <div class="field">
+        <label for="email">{{ A.email }}</label>
+        <input id="email" name="email" type="email" autocomplete="email" required maxlength="254"
+               value="{{ form.email }}" {% if errors.email %}aria-invalid="true" aria-describedby="email-err"{% endif %}>
+        {% if errors.email %}<p class="field__error" id="email-err">{{ errors.email }}</p>{% endif %}
+      </div>
+
+      <div class="field">
+        <label for="password">{{ A.password }}</label>
+        <input id="password" name="password" type="password" autocomplete="new-password" required
+               aria-describedby="password-hint{% if errors.password %} password-err{% endif %}"
+               {% if errors.password %}aria-invalid="true"{% endif %}>
+        <p class="field__hint" id="password-hint">{{ A.password_hint }}</p>
+        {% if errors.password %}<p class="field__error" id="password-err">{{ errors.password }}</p>{% endif %}
+      </div>
+
+      <div class="field">
+        <label for="password_confirm">{{ A.password_confirm }}</label>
+        <input id="password_confirm" name="password_confirm" type="password" autocomplete="new-password" required
+               {% if errors.password_confirm %}aria-invalid="true" aria-describedby="password2-err"{% endif %}>
+        {% if errors.password_confirm %}<p class="field__error" id="password2-err">{{ errors.password_confirm }}</p>{% endif %}
+      </div>
+
+      <div class="field">
+        <label for="nickname">{{ A.nickname }}</label>
+        <input id="nickname" name="nickname" type="text" autocomplete="nickname" required maxlength="12"
+               value="{{ form.nickname }}" aria-describedby="nickname-hint{% if errors.nickname %} nickname-err{% endif %}"
+               {% if errors.nickname %}aria-invalid="true"{% endif %}>
+        <p class="field__hint" id="nickname-hint">{{ A.nickname_hint }}</p>
+        {% if errors.nickname %}<p class="field__error" id="nickname-err">{{ errors.nickname }}</p>{% endif %}
+      </div>
+
+      <div class="field field--check">
+        <label class="check">
+          <input type="checkbox" name="agree" {% if errors.agree %}aria-invalid="true" aria-describedby="agree-err"{% endif %}>
+          <span>{{ A.agree }}</span>
+        </label>
+        <p class="field__hint"><a href="{{ url_for('pages.terms') }}">이용약관</a> · <a href="{{ url_for('pages.privacy') }}">개인정보처리방침</a></p>
+        {% if errors.agree %}<p class="field__error" id="agree-err">{{ errors.agree }}</p>{% endif %}
+      </div>
+
+      <div class="field field--check">
+        <label class="check">
+          <input type="checkbox" name="marketing" {% if form.marketing %}checked{% endif %}>
+          <span>{{ A.marketing }}</span>
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn--primary btn--lg btn--block" data-once>{{ A.signup_button }}</button>
+    </form>
+
+    <p class="auth__switch">{{ A.to_login }} <a href="{{ url_for('auth.login') }}">{{ A.to_login_link }}</a></p>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/forms.js') }}"></script>
+{% endblock %}

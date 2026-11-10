@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% set A = c.AUTH %}
+
+{% block title %}{{ A.login_title }} — 감정서랍{% endblock %}
+
+{% block content %}
+<section class="section page">
+  <div class="container container--narrow auth">
+    <h1 class="page__title">{{ A.login_title }}</h1>
+
+    {% if resume_notice %}<p class="notice">{{ resume_notice }}</p>{% endif %}
+    {% if error %}<p class="form__error" role="alert">{{ error }}</p>{% endif %}
+
+    <form method="post" action="{{ url_for('auth.login') }}" class="form" novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {% if next_url %}<input type="hidden" name="next" value="{{ next_url }}">{% endif %}
+
+      <div class="field">
+        <label for="email">{{ A.email }}</label>
+        <input id="email" name="email" type="email" autocomplete="email" required value="{{ email }}">
+      </div>
+
+      <div class="field">
+        <label for="password">{{ A.password }}</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+      </div>
+
+      <button type="submit" class="btn btn--primary btn--lg btn--block" data-once>{{ A.login_button }}</button>
+    </form>
+
+    <p class="auth__switch">{{ A.to_signup }} <a href="{{ url_for('auth.signup') }}">{{ A.to_signup_link }}</a></p>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/forms.js') }}"></script>
+{% endblock %}

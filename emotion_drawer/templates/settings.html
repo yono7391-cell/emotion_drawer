@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}{{ T.title }} — 감정서랍{% endblock %}
+
+{% block content %}
+<section class="section page settings">
+  <div class="container container--narrow">
+    <h1 class="page__title">{{ T.title }}</h1>
+
+    {% if notice %}<p class="notice" role="status">{{ notice }}</p>{% endif %}
+
+    {# 계정: 이메일(읽기 전용) + 닉네임 변경 (F7-1) #}
+    <section class="settings__block" aria-labelledby="s-account">
+      <h2 class="settings__title" id="s-account">{{ T.account }}</h2>
+      <p class="settings__email">{{ current_user.email }}</p>
+      <form method="post" action="{{ url_for('settings.nickname') }}" class="form form--tight" novalidate>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="field">
+          <label for="nickname">{{ c.AUTH.nickname }}</label>
+          <input id="nickname" name="nickname" type="text" maxlength="12" required value="{{ current_user.nickname }}"
+                 aria-describedby="nickname-hint{% if nickname_error %} nickname-err{% endif %}"
+                 {% if nickname_error %}aria-invalid="true"{% endif %}>
+          <p class="field__hint" id="nickname-hint">{{ c.AUTH.nickname_hint }}</p>
+          {% if nickname_error %}<p class="field__error" id="nickname-err">{{ nickname_error }}</p>{% endif %}
+        </div>
+        <div><button type="submit" class="btn btn--ghost" data-once>{{ T.nickname_save }}</button></div>
+      </form>
+    </section>
+
+    {# 이메일 소식 수신 동의 (F7-2) #}
+    <section class="settings__block" aria-labelledby="s-consent">
+      <h2 class="settings__title" id="s-consent">{{ T.consent_title }}</h2>
+      <form method="post" action="{{ url_for('settings.consent') }}" class="form form--tight">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label class="check">
+          <input type="checkbox" name="marketing" {% if current_user.marketing_consent %}checked{% endif %}>
+          <span>{{ T.consent_label }}</span>
+        </label>
+        <p class="field__hint">{{ T.consent_hint }}</p>
+        <div><button type="submit" class="btn btn--ghost" data-once>{{ T.consent_save }}</button></div>
+      </form>
+    </section>
+
+    {# 내 기록 내려받기 (F7-3) #}
+    <section class="settings__block" aria-labelledby="s-export">
+      <h2 class="settings__title" id="s-export">{{ T.export_title }}</h2>
+      <p class="field__hint">{{ T.export_hint }}</p>
+      <p><a class="btn btn--ghost" href="{{ url_for('settings.export') }}">{{ T.export_button }}</a></p>
+    </section>
+
+    {# 로그아웃 (좁은 화면에서는 머리말 대신 여기서) #}
+    <section class="settings__block">
+      <form method="post" action="{{ url_for('auth.logout') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn--ghost">{{ c.AUTH.logout }}</button>
+      </form>
+    </section>
+
+    {# 계정 삭제: '삭제'를 입력해야 버튼이 켜진다 (F7-4) #}
+    <section class="settings__block settings__block--danger" aria-labelledby="s-delete">
+      <h2 class="settings__title" id="s-delete">{{ T.delete_title }}</h2>
+      <p class="field__hint" id="delete-hint">{{ T.delete_hint }}</p>
+      <form method="post" action="{{ url_for('settings.delete_account') }}" class="form form--tight" data-delete-form novalidate>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="field">
+          <label for="confirm">{{ T.delete_input_label }}</label>
+          <input id="confirm" name="confirm" type="text" autocomplete="off" data-delete-input
+                 aria-describedby="delete-hint{% if delete_error %} delete-err{% endif %}"
+                 {% if delete_error %}aria-invalid="true"{% endif %}>
+          {% if delete_error %}<p class="field__error" id="delete-err">{{ delete_error }}</p>{% endif %}
+        </div>
+        <div><button type="submit" class="btn btn--ghost btn--danger" data-delete-button data-once>{{ T.delete_button }}</button></div>
+      </form>
+    </section>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/forms.js') }}"></script>
+<script>
+  (function () {
+    var input = document.querySelector("[data-delete-input]");
+    var button = document.querySelector("[data-delete-button]");
+    if (!input || !button) return;
+    function update() { button.disabled = input.value.trim() !== "삭제"; }
+    input.addEventListener("input", update);
+    update();
+  })();
+</script>
+{% endblock %}

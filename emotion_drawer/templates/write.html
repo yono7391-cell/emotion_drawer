@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{#
+  4단계 기록 화면 (PRD F2). 체험(try)·작성(new)·수정(edit)이 함께 쓴다.
+  - try : 서버로 아무것도 보내지 않는다 (write.js 가 브라우저에만 임시 보관).
+  - new : 시작 → 4단계 → 마무리에서 [서랍에 담기]를 눌러야 서버에 저장 (F2-11).
+  - edit: 기존 값이 채워진 상태로 1단계부터 연다 (F4-6). 기록 날짜도 바꿀 수 있다.
+#}
+{% set W = c.WRITE %}
+{% set S = c.STEPS %}
+{% set E = entry or {} %}
+{% set selected = (E.emotions or [])|map(attribute='code')|list %}
+
+{% block title %}{{ c.CTA_TRY if mode == "try" else (c.DRAWER.edit if mode == "edit" else c.DRAWER.new) }} — 감정서랍{% endblock %}
+
+{% block content %}
+<section class="write" aria-label="감정 기록">
+  <div class="container container--narrow">
+
+    <noscript><p class="notice">{{ W.noscript }}</p></noscript>
+
+    <form id="write-form"
+          class="write__form"
+          data-mode="{{ mode }}"
+          data-draft-key="{{ draft_key }}"
+          {% if initial_step %}data-initial-step="{{ initial_step }}"{% endif %}
+          {% if error %}data-initial-alert="{{ error }}"{% endif %}
+          {% if mode != "try" %}method="post" action="{{ action }}"{% endif %}
+          novalidate
+          hidden>
+      {% if mode != "try" %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endif %}
+
+      {# 상단: 이전 버튼과 진행 표시 (F2-2) #}
+      <div class="write__top">
+        <button type="button" class="btn btn--ghost btn--sm" data-action="prev">← {{ W.prev }}</button>
+        <div class="progress" data-progress hidden>
+          <span class="progress__text" data-progress-text>1 / 4</span>
+          <span class="progress__bar" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </span>
+        </div>
+      </div>
+
+      <p class="write__alert" data-alert role="status" aria-live="polite"></p>
+
+      {# 시작: 감정 하나 고르기 (수정할 때는 건너뜀) #}
+      {% if mode != "edit" %}
+      <div class="write__step" data-step="start">
+        <h1 class="write__title" tabindex="-1" id="t-start">{{ W.start_title }}</h1>
+        <p class="write__help">{{ W.start_help }}</p>
+        <div class="chips" role="radiogroup" aria-labelledby="t-start">
+          {% for e in emotions %}
+          <label class="chip">
+            <input type="radio" name="start_emotion" value="{{ e.code }}">
+            <span>{{ e.label }}</span>
+          </label>
+          {% endfor %}
+        </div>
+        <div class="write__actions">
+          <button type="button" class="btn btn--primary" data-action="next" data-requires-start disabled>{{ W.next }}</button>
+        </div>
+      </div>
+      {% endif %}
+
+      {# 1 상황 #}
+      <div class="write__step" data-step="1" hidden>
+        <h1 class="write__title" tabindex="-1" id="t-1">{{ S[0].question }}</h1>
+        <p class="write__help" id="h-1">{{ S[0].help }}</p>
+        <textarea name="situation" rows="5" maxlength="1000"
+                  aria-labelledby="t-1" aria-describedby="h-1"
+                  placeholder="{{ W.placeholders[1] }}">{{ E.situation or "" }}</textarea>
+        <p class="counter" data-counter-for="situation">0 / 1000</p>
+        <div class="write__actions">
+          <button type="button" class="btn btn--ghost" data-action="skip">{{ W.skip }}</button>
+          <button type="button" class="btn btn--primary" data-action="next">{{ W.next }}</button>
+        </div>
+      </div>
+
+      {# 2 생각 #}
+      <div class="write__step" data-step="2" hidden>
+        <h1 class="write__title" tabindex="-1" id="t-2">{{ S[1].question }}</h1>
+        <p class="write__help" id="h-2">{{ S[1].help }}</p>
+        <textarea name="thought" rows="5" maxlength="1000"
+                  aria-labelledby="t-2" aria-describedby="h-2"
+                  placeholder="{{ W.placeholders[2] }}">{{ E.thought or "" }}</textarea>
+        <p class="counter" data-counter-for="thought">0 / 1000</p>
+        <div class="write__actions">
+          <button type="button" class="btn btn--ghost" data-action="skip">{{ W.skip }}</button>
+          <button type="button" class="btn btn--primary" data-action="next">{{ W.next }}</button>
+        </div>
+      </div>
+
+      {# 3 감정 (최대 3개) + 강도 #}
+      <div class="write__step" data-step="3" hidden>
+        <h1 class="write__title" tabindex="-1" id="t-3">{{ S[2].question }}</h1>
+        <p class="write__help" id="h-3">{{ S[2].help }}</p>
+        <div class="chips" role="group" aria-labelledby="t-3" aria-describedby="h-3">
+          {% for e in emotions %}
+          <label class="chip">
+            <input type="checkbox" name="emotions" value="{{ e.code }}" {% if e.code in selected %}checked{% endif %}>
+            <span>{{ e.label }}</span>
+          </label>
+          {% endfor %}
+        </div>
+
+        <h2 class="write__subtitle" id="t-3i">{{ W.intensity_title }}</h2>
+        <p class="write__help" id="h-3i">{{ W.intensity_help }}</p>
+        <div class="scale" role="radiogroup" aria-labelledby="t-3i" aria-describedby="h-3i">
+          {% for n in range(1, 6) %}
+          <label class="scale__item">
+            <input type="radio" name="intensity" value="{{ n }}" {% if E.intensity == n %}checked{% endif %}>
+            <span>{{ n }}</span>
+          </label>
+          {% endfor %}
+        </div>
+
+        <div class="write__actions">
+          <button type="button" class="btn btn--ghost" data-action="skip">{{ W.skip }}</button>
+          <button type="button" class="btn btn--primary" data-action="next">{{ W.next }}</button>
+        </div>
+      </div>
+
+      {# 4 욕구: 1개 선택(선택 사항) + 자유 입력 #}
+      <div class="write__step" data-step="4" hidden>
+        <h1 class="write__title" tabindex="-1" id="t-4">{{ S[3].question }}</h1>
+        <p class="write__help" id="h-4">{{ S[3].help }}</p>
+        <div class="chips" role="group" aria-labelledby="t-4">
+          {% for n in needs %}
+          <label class="chip">
+            <input type="checkbox" name="need_code" value="{{ n.code }}" {% if E.need_code == n.code %}checked{% endif %}>
+            <span>{{ n.label }}</span>
+          </label>
+          {% endfor %}
+        </div>
+        <textarea name="need_note" rows="4" maxlength="1000"
+                  aria-labelledby="t-4" aria-describedby="h-4"
+                  placeholder="{{ W.placeholders[4] }}">{{ E.need_note or "" }}</textarea>
+        <p class="counter" data-counter-for="need_note">0 / 1000</p>
+        <div class="write__actions">
+          <button type="button" class="btn btn--ghost" data-action="skip">{{ W.skip }}</button>
+          <button type="button" class="btn btn--primary" data-action="next">{{ W.next }}</button>
+        </div>
+      </div>
+
+      {# 마무리: 요약 + 버튼 (F2-8, F2-9, F2-11) #}
+      <div class="write__step" data-step="finish" hidden>
+        <h1 class="write__title" tabindex="-1">{{ W.finish_message }}</h1>
+        <dl class="summary">
+          <div class="summary__row"><dt>{{ S[0].name }}</dt><dd data-summary="situation"></dd></div>
+          <div class="summary__row"><dt>{{ S[1].name }}</dt><dd data-summary="thought"></dd></div>
+          <div class="summary__row"><dt>{{ S[2].name }}</dt><dd data-summary="emotions"></dd></div>
+          <div class="summary__row"><dt>{{ S[3].name }}</dt><dd data-summary="need"></dd></div>
+        </dl>
+
+        {% if mode != "try" %}
+        <div class="field write__date">
+          <label for="entry_date">{{ c.WRITE_DATE_LABEL }}</label>
+          <input id="entry_date" name="entry_date" type="date" max="{{ today }}"
+                 value="{{ E.entry_date or today }}">
+        </div>
+        {% endif %}
+
+        <div class="write__actions write__actions--stack">
+          {% if mode == "try" %}
+          <a class="btn btn--primary btn--lg" href="{{ url_for('auth.signup', **{'from': 'try'}) }}" data-action="keep">{{ W.try_keep }}</a>
+          <button type="button" class="btn btn--ghost" data-action="restart">{{ W.try_again }}</button>
+          <button type="button" class="btn btn--ghost" data-action="close">{{ W.try_close }}</button>
+          {% else %}
+          <button type="submit" class="btn btn--primary btn--lg" data-action="save">{{ c.WRITE_SAVE }}</button>
+          {% endif %}
+        </div>
+      </div>
+    </form>
+
+    <p class="write__crisis">{% include "partials/crisis_link.html" %}</p>
+  </div>
+</section>
+
+<script type="application/json" id="write-messages">{{ c.MESSAGES|tojson }}</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/write.js') }}"></script>
+{% endblock %}

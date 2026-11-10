@@ -1,0 +1,14 @@
+# 1. 절대 올리면 안 되는 것 — 비밀 키 (.env.example 은 올린다)
+.env
+!.env.example
+
+# 2. 올리지 않는 게 좋은 것 — DB(init_db.py 로 다시 만들 수 있음), 파이썬 자동 생성 파일
+*.db
+__pycache__/
+*.pyc
+
+# 3. 테스트용이거나 앱과 직접 관련 없는 것
+backup/
+just_for_test/
+.claude/
+tests/

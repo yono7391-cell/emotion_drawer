@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}잠시 문제가 생겼어요 — 감정서랍{% endblock %}
+
+{% block content %}
+<section class="section page">
+  <div class="container container--narrow">
+    <h1 class="page__title">잠시 문제가 생겼어요. 쓴 내용은 그대로 있으니 잠시 후 다시 시도해 주세요.</h1>
+    <p class="page__back"><a href="{{ url_for('pages.landing') }}">처음 화면으로</a></p>
+  </div>
+</section>
+{% endblock %}

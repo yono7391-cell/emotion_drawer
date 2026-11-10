@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% set D = c.DRAWER %}
+
+{% block title %}{{ D.title }} — 감정서랍{% endblock %}
+
+{% block content %}
+<section class="section page drawer">
+  <div class="container container--narrow">
+
+    <div class="drawer__head">
+      <h1 class="page__title">{{ D.title }}</h1>
+      <a class="btn btn--primary" href="{{ url_for('drawer.new') }}">+ {{ D.new }}</a>
+    </div>
+    <p class="drawer__plan"><span class="plan-badge">{{ D.plan_trial.format(days=plan.days_left) if plan.is_plus else D.plan_free }}</span></p>
+
+    {# 가입 직후: 체험 기록을 첫 기록으로 보관할지 묻기 (F2-10). 브라우저에 체험 기록이 있을 때만 drawer.js 가 보여 준다 #}
+    {% if offer_import %}
+    <div class="import-offer" data-import-offer hidden
+         data-url="{{ url_for('drawer.import_try') }}"
+         data-csrf="{{ csrf_token() }}">
+      <p class="import-offer__question">{{ D.import_question }}</p>
+      <p class="write__alert" data-import-alert role="status" aria-live="polite"></p>
+      <div class="import-offer__actions">
+        <button type="button" class="btn btn--primary" data-import="yes">{{ D.import_yes }}</button>
+        <button type="button" class="btn btn--ghost" data-import="no">{{ D.import_no }}</button>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if total >= 3 %}
+    <div class="reflect-banner">
+      <p>{{ D.reflect_banner }}</p>
+      <a class="btn btn--ghost btn--sm" href="{{ url_for('reflect.index') }}">{{ D.reflect_button }}</a>
+    </div>
+    {% endif %}
+
+    {% if total == 0 %}
+      <div class="empty">
+        <p>{{ D.empty }}</p>
+        <a class="btn btn--primary btn--lg" href="{{ url_for('drawer.new') }}">{{ D.new }}</a>
+      </div>
+    {% else %}
+
+      {# 감정 필터(무료)와 키워드 검색(Plus). 조건은 주소가 아닌 세션에 보관 #}
+      <form method="post" action="{{ url_for('drawer.set_filter') }}" class="filters">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="filters__row">
+          <label class="sr-only" for="f-emotion">{{ D.filter_label }}</label>
+          <select id="f-emotion" name="emotion">
+            <option value="">{{ D.filter_all }}</option>
+            {% for e in emotions %}
+            <option value="{{ e.code }}" {% if filt.emotion == e.code %}selected{% endif %}>{{ e.label }}</option>
+            {% endfor %}
+          </select>
+
+          <label class="sr-only" for="f-q">{{ D.search_label }}</label>
+          <input id="f-q" name="q" type="search" maxlength="50"
+                 placeholder="{{ D.search_placeholder }}{% if not plan.is_plus %} (Plus){% endif %}"
+                 value="{{ filt.q if plan.is_plus and filt.q else '' }}"
+                 {% if not plan.is_plus %}disabled aria-describedby="search-lock"{% endif %}>
+
+          <button type="submit" class="btn btn--ghost btn--sm">{{ D.apply }}</button>
+          {% if filt.emotion or filt.q %}
+          <button type="submit" name="reset" value="1" class="btn btn--ghost btn--sm">{{ D.reset }}</button>
+          {% endif %}
+        </div>
+        {% if not plan.is_plus %}<p class="lock-note" id="search-lock">🔒 {{ D.plus_locked }}</p>{% endif %}
+      </form>
+
+      {% if rows %}
+      <ul class="entry-list">
+        {% for r in rows %}
+        <li>
+          <a class="entry-card" href="{{ url_for('drawer.detail', entry_id=r.id) }}">
+            <span class="entry-card__meta">
+              <span class="entry-card__date">{{ short_date(r.entry_date) }}</span>
+              <span class="entry-card__emotions">{{ r.emotions|map(attribute='label')|join(' · ') }}</span>
+            </span>
+            {% if r.situation %}<span class="entry-card__line">{{ first_line(r.situation) }}</span>{% endif %}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+      {% if has_more %}
+      <p class="more"><a class="btn btn--ghost" href="{{ url_for('drawer.index', page=next_page) }}">{{ D.more }}</a></p>
+      {% endif %}
+      {% else %}
+      <p class="empty">{{ D.no_result }}</p>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/forms.js') }}"></script>
+{% if offer_import %}<script src="{{ url_for('static', filename='js/drawer.js') }}"></script>{% endif %}
+{% endblock %}

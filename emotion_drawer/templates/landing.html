@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}{{ c.SERVICE_NAME }} — {{ c.HERO_TITLE }}{% endblock %}
+{% block description %}{{ c.META_DESCRIPTION }}{% endblock %}
+
+{% block meta %}
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:site_name" content="{{ c.SERVICE_NAME }}">
+  <meta property="og:title" content="{{ c.SERVICE_NAME }} — {{ c.HERO_TITLE }}">
+  <meta property="og:description" content="{{ c.META_DESCRIPTION }}">
+  <meta property="og:url" content="{{ url_for('pages.landing', _external=True) }}">
+  <meta property="og:image" content="{{ url_for('static', filename='img/og.png', _external=True) }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{{ faq_jsonld|tojson }}</script>
+{% endblock %}
+
+{% block content %}
+
+{# ① 히어로 — F1-2, F1-3 #}
+<section class="hero" aria-labelledby="hero-title">
+  <div class="container">
+    <h1 id="hero-title" class="hero__title">{{ c.HERO_TITLE }}</h1>
+    <p class="hero__body">{{ c.HERO_BODY }}</p>
+    <div class="hero__actions">
+      <a class="btn btn--primary btn--lg" href="/try" data-cta="hero">{{ c.CTA_TRY }}</a>
+      {% if current_user %}
+      <a class="btn btn--ghost btn--lg" href="{{ url_for('drawer.index') }}" data-cta="hero_drawer">{{ c.DRAWER.open }}</a>
+      {% else %}
+      <a class="btn btn--ghost btn--lg" href="{{ url_for('auth.login') }}" data-cta="hero_login">{{ c.CTA_LOGIN }}</a>
+      {% endif %}
+    </div>
+    <p class="hero__sub">{{ c.HERO_SUB }}</p>
+  </div>
+</section>
+
+{# ② 공감 — F1-4 #}
+<section class="section section--empathy" aria-label="공감">
+  <div class="container">
+    <p class="empathy">{{ c.EMPATHY }}</p>
+  </div>
+</section>
+
+{# ③ 4단계 소개 — F1-5 #}
+<section class="section" aria-labelledby="steps-title">
+  <div class="container">
+    <h2 id="steps-title" class="section__title">{{ c.SECTION_TITLES.steps }}</h2>
+    <ol class="steps">
+      {% for s in c.STEPS %}
+      <li class="step-card">
+        <p class="step-card__label"><span class="step-card__no">{{ s.no }}</span> {{ s.name }}</p>
+        <p class="step-card__question">{{ s.question }}</p>
+        <p class="step-card__help">{{ s.help }}</p>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+{# ④ 체험 시작 #}
+<section class="section section--try" aria-labelledby="try-title">
+  <div class="container try-box">
+    <h2 id="try-title" class="section__title">{{ c.SECTION_TITLES.try }}</h2>
+    <p class="section__lead">{{ c.TRY_SECTION_BODY }}</p>
+    <a class="btn btn--primary btn--lg" href="/try" data-cta="try_section">{{ c.CTA_TRY }}</a>
+  </div>
+</section>
+
+{# ⑤ 서랍 경험 4가지 — F1-6 #}
+<section class="section" aria-labelledby="drawer-title">
+  <div class="container">
+    <h2 id="drawer-title" class="section__title">{{ c.SECTION_TITLES.drawer }}</h2>
+    <ul class="drawer-grid">
+      {% for d in c.DRAWER_EXPERIENCES %}
+      <li class="drawer-item">
+        <span class="drawer-item__handle" aria-hidden="true"></span>
+        <p class="drawer-item__verb">{{ d.verb }}</p>
+        <p class="drawer-item__desc">{{ d.desc }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{# ⑥ 안전과 기록 보관 — F1-7 #}
+<section class="section section--soft" aria-labelledby="safety-title">
+  <div class="container">
+    <h2 id="safety-title" class="section__title">{{ c.SECTION_TITLES.safety }}</h2>
+    <ul class="safety-list">
+      {% for line in c.SAFETY_LINES %}
+      <li>{{ line }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{# ⑦ 요금 — F1-8 #}
+<section class="section" id="pricing" aria-labelledby="pricing-title">
+  <div class="container">
+    <h2 id="pricing-title" class="section__title">{{ c.SECTION_TITLES.pricing }}</h2>
+    <ul class="pricing">
+      {% for p in c.PRICING_PLANS %}
+      <li class="plan">
+        <h3 class="plan__name">{{ p.name }}</h3>
+        <p class="plan__price">{{ p.price }}</p>
+        <ul class="plan__features">
+          {% for f in p.features %}<li>{{ f }}</li>{% endfor %}
+        </ul>
+        {% if p.note %}<p class="plan__note">{{ p.note }}</p>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    <p class="pricing__notice">{{ c.PRICING_NOTICE }}</p>
+  </div>
+</section>
+
+{# ⑧ FAQ — F1-9, F1-12 (details 요소라 자바스크립트가 꺼져도 열림) #}
+<section class="section section--soft" id="faq" aria-labelledby="faq-title">
+  <div class="container">
+    <h2 id="faq-title" class="section__title">{{ c.SECTION_TITLES.faq }}</h2>
+    <div class="faq">
+      {% for qid, question, answer in c.FAQ %}
+      <details class="faq__item" data-faq="{{ qid }}">
+        <summary class="faq__question">{{ question }}</summary>
+        <p class="faq__answer">{{ answer }}</p>
+      </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ⑨ 마지막 CTA #}
+<section class="section section--final" aria-labelledby="final-title">
+  <div class="container">
+    <h2 id="final-title" class="section__title">{{ c.SECTION_TITLES.final }}</h2>
+    <a class="btn btn--primary btn--lg" href="/try" data-cta="bottom">{{ c.CTA_TRY }}</a>
+    <p class="hero__sub">{{ c.HERO_SUB }}</p>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/landing.js') }}"></script>
+{% endblock %}

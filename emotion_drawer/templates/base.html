@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}감정서랍{% endblock %}</title>
+  <meta name="description" content="{% block description %}감정을 기록하고 나를 이해하는 자기 성찰 플랫폼{% endblock %}">
+  {% block meta %}{% endblock %}
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% if ga_id %}
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_id }}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', {{ ga_id|tojson }});
+  </script>
+  {% endif %}
+  <script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+  {% if clear_drafts %}
+  <script>
+    /* 저장 완료·로그아웃 뒤: 작성 중 임시 보관본 지우기 (F2-11) */
+    (function (prefixes) {
+      try {
+        Object.keys(window.localStorage).forEach(function (key) {
+          if (prefixes.some(function (p) { return key.indexOf(p) === 0; })) window.localStorage.removeItem(key);
+        });
+      } catch (e) { /* 저장소를 쓸 수 없는 브라우저 */ }
+    })({{ clear_drafts|tojson }});
+  </script>
+  {% endif %}
+  {% if ga_events %}
+  <script>
+    {% for ev in ga_events %}window.track({{ ev.name|tojson }}, {{ ev.params|tojson }});
+    {% endfor %}
+  </script>
+  {% endif %}
+</head>
+<body>
+  <a class="skip-link" href="#main">본문으로 건너뛰기</a>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="logo" href="{{ url_for('pages.landing') }}">감정서랍</a>
+      <nav class="site-header__nav" aria-label="계정">
+        {% if current_user %}
+          <span class="plan-badge">{{ C.DRAWER.plan_trial.format(days=plan.days_left) if plan.is_plus else C.DRAWER.plan_free }}</span>
+          <a class="btn btn--ghost btn--sm" href="{{ url_for('drawer.index') }}">{{ C.DRAWER.title }}</a>
+          <a class="btn btn--ghost btn--sm" href="{{ url_for('settings.index') }}">{{ C.SETTINGS.nav }}</a>
+          <form method="post" action="{{ url_for('auth.logout') }}" class="inline-form site-header__logout">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn--ghost btn--sm">{{ C.AUTH.logout }}</button>
+          </form>
+        {% else %}
+          <a class="btn btn--ghost btn--sm" href="{{ url_for('auth.login') }}">{{ C.AUTH.login_button }}</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="site-footer__brand"><strong>감정서랍</strong> · 감정을 기록하고 나를 이해하는 자기 성찰 플랫폼</p>
+      <p class="site-footer__crisis">{% include "partials/crisis_link.html" %}</p>
+      <nav class="site-footer__links" aria-label="정책">
+        <a href="{{ url_for('pages.privacy') }}">개인정보처리방침</a>
+        <a href="{{ url_for('pages.terms') }}">이용약관</a>
+      </nav>
+      <p class="site-footer__disclaimer">감정서랍은 의료·심리 진단이나 치료를 대신하지 않습니다.</p>
+    </div>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

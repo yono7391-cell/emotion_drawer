@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}{{ c.CRISIS_LINK }} — 감정서랍{% endblock %}
+
+{% block content %}
+<section class="section page">
+  <div class="container container--narrow">
+    <h1 class="page__title">{{ c.CRISIS_LINK }}</h1>
+    <p class="page__lead">{{ c.CRISIS_MESSAGE }}</p>
+    <ul class="contact-list">
+      {% for ct in c.CRISIS_CONTACTS %}
+      <li class="contact">
+        <span class="contact__name">{{ ct.name }}</span>
+        <a class="contact__number" href="tel:{{ ct.number|replace('-', '') }}">{{ ct.number }}</a>
+        {% if ct.note %}<span class="contact__note">({{ ct.note }})</span>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    <p class="page__back"><a href="{{ url_for('pages.landing') }}">처음 화면으로</a></p>
+  </div>
+</section>
+{% endblock %}
