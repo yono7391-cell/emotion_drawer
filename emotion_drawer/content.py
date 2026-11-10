@@ -287,3 +287,17 @@ def faq_jsonld() -> dict:
             for _id, question, answer in FAQ
         ],
     }
+
+
+def organization_jsonld(site_url: str, logo_url: str) -> dict:
+    """F1-11 (v3 보완) 브랜드 소개: Organization 구조화 데이터.
+    가상 서비스이므로 연락처·주소·SNS(sameAs)는 넣지 않는다."""
+    return {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": SERVICE_NAME,
+        "url": site_url,
+        "description": ONE_LINER,
+        "logo": logo_url,
+        "slogan": HERO_TITLE,
+    }

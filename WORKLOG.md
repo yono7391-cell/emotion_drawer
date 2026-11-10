@@ -17,7 +17,7 @@
 | 원본 기획서 | `감정서랍_브랜드_성장전략_통합기획2.md` (ChatGPT로 작성, 로컬에만 보관, 저장소에는 올리지 않음) |
 | 기술 | Python 3.14.5, Flask 3.1.3, Flask-WTF 1.3.0(CSRF), python-dotenv, tzdata, SQLite, Jinja + 순수 CSS·JS (빌드 도구 없음) |
 | 실행 | `emotion_drawer/run.bat` 더블클릭 → http://localhost:5000 (Claude 앱에서는 `.claude/launch.json`의 `emotion-drawer`) |
-| **현재 진행** | **PLAN.md 1~4단계 모두 완료 (2026-11-09)**. PRD 9장 완료 기준 37개 중 36개 확인, 1개(GA4 실시간 보고서)는 측정 ID가 있어야 확인 가능. **2026-11-10 GitHub(`yono7391-cell/emotion_drawer`) 공개, Railway 배포 완료** (https://emotiondrawer-production.up.railway.app) |
+| **현재 진행** | **PLAN.md 1~4단계 모두 완료 (2026-11-09)**. PRD 9장 완료 기준 38개(2026-11-10 Organization 1개 추가) 중 37개 확인, 1개(GA4 실시간 보고서)는 측정 ID가 있어야 확인 가능. **2026-11-10 GitHub(`yono7391-cell/emotion_drawer`) 공개, Railway 배포 완료** (https://emotiondrawer-production.up.railway.app) |
 | 백업 | `backup/2026-11-09_2단계전/`, `_3단계전/`, `_4단계전/` |
 | DB 상태 | 감정 12개·욕구 8개만 있음. 사용자·기록 0건 (점검용 계정은 모두 삭제함) |
 
@@ -220,3 +220,11 @@ agm_last_project/
 - 배포 확인: 공개 화면 7개 200, 로그인 필요 화면 3개는 로그인으로 이동, 없는 주소 404, http → https 이동, og:url https, 세션 쿠키 Secure·HttpOnly, 디버그 화면 없음. 모바일(375px)에서 체험 4단계 → 완료 요약까지 진행, 체험 중 서버로 기록 전송 없음(GET만), 콘솔 오류 없음
 - 확인 못 함: 가입·로그인·기록 저장·회고·설정은 실제 서비스 DB라 점검용 계정을 만들지 않음 (사용자가 직접 확인)
 - D10 위기 상담 번호(109, 1577-0199): 공개 전 사용자가 연결되는 번호임을 확인함
+
+### 2026-11-10 ⑪ Organization 구조화 데이터 (워크북 요구)
+
+- 백업: `backup/2026-11-10_구조화데이터전/`
+- PRD v3 보완(판은 그대로): V12, F1-11에 Organization 항목, 9장 랜딩 완료 기준 1개 추가 → 완료 기준 38개
+- 만든 것: `content.organization_jsonld()`(name·url·description·logo·slogan, 연락처·주소·SNS 없음), `pages.landing`에서 접속 주소로 url·logo 생성, `landing.html`에 FAQPage 앞에 블록 추가
+- FAQPage는 1단계에서 이미 넣어 둠(질문 8개). 구글은 2023년부터 FAQ 리치 결과를 정부·건강 분야의 공신력 있는 사이트에만 보여 줘서 검색 결과에 펼쳐 보이지 않을 수 있음
+- 확인: 로컬에서 두 블록 JSON 형식, 로고 파일 200, 서버 점검 45·41개 통과

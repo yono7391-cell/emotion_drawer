@@ -1,6 +1,6 @@
 """로그인 없이 볼 수 있는 화면: 랜딩, 개인정보처리방침, 이용약관, 위기 안내."""
 
-from flask import Blueprint, current_app, render_template, send_from_directory
+from flask import Blueprint, current_app, render_template, send_from_directory, url_for
 
 import content
 from db import get_db
@@ -18,7 +18,14 @@ def load_choices():
 
 @bp.get("/")
 def landing():
-    return render_template("landing.html", c=content, faq_jsonld=content.faq_jsonld())
+    # 주소는 코드에 쓰지 않고 접속한 주소로 만든다 (배포에서는 TRUST_PROXY로 https)
+    org_jsonld = content.organization_jsonld(
+        site_url=url_for("pages.landing", _external=True),
+        logo_url=url_for("static", filename="img/favicon.svg", _external=True),
+    )
+    return render_template(
+        "landing.html", c=content, faq_jsonld=content.faq_jsonld(), org_jsonld=org_jsonld
+    )
 
 
 @bp.get("/try")
