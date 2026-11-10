@@ -228,3 +228,4 @@ agm_last_project/
 - 만든 것: `content.organization_jsonld()`(name·url·description·logo·slogan, 연락처·주소·SNS 없음), `pages.landing`에서 접속 주소로 url·logo 생성, `landing.html`에 FAQPage 앞에 블록 추가
 - FAQPage는 1단계에서 이미 넣어 둠(질문 8개). 구글은 2023년부터 FAQ 리치 결과를 정부·건강 분야의 공신력 있는 사이트에만 보여 줘서 검색 결과에 펼쳐 보이지 않을 수 있음
 - 확인: 로컬에서 두 블록 JSON 형식, 로고 파일 200, 서버 점검 45·41개 통과
+- 배포 확인: 푸시 후 약 45초 뒤 배포 주소에 반영. Organization의 url·logo가 https 배포 주소로 나옴. Schema Markup Validator(validator.schema.org)에서 Organization·FAQPage 2개 오류 0·경고 0
