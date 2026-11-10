@@ -17,7 +17,7 @@
 | 원본 기획서 | `감정서랍_브랜드_성장전략_통합기획2.md` (ChatGPT로 작성, 로컬에만 보관, 저장소에는 올리지 않음) |
 | 기술 | Python 3.14.5, Flask 3.1.3, Flask-WTF 1.3.0(CSRF), python-dotenv, tzdata, SQLite, Jinja + 순수 CSS·JS (빌드 도구 없음) |
 | 실행 | `emotion_drawer/run.bat` 더블클릭 → http://localhost:5000 (Claude 앱에서는 `.claude/launch.json`의 `emotion-drawer`) |
-| **현재 진행** | **PLAN.md 1~4단계 모두 완료 (2026-11-09)**. PRD 9장 완료 기준 37개 중 36개 확인, 1개(GA4 실시간 보고서)는 측정 ID가 있어야 확인 가능 |
+| **현재 진행** | **PLAN.md 1~4단계 모두 완료 (2026-11-09)**. PRD 9장 완료 기준 37개 중 36개 확인, 1개(GA4 실시간 보고서)는 측정 ID가 있어야 확인 가능. **2026-11-10 GitHub(`yono7391-cell/emotion_drawer`) 공개, Railway 배포 완료** (https://emotiondrawer-production.up.railway.app) |
 | 백업 | `backup/2026-11-09_2단계전/`, `_3단계전/`, `_4단계전/` |
 | DB 상태 | 감정 12개·욕구 8개만 있음. 사용자·기록 0건 (점검용 계정은 모두 삭제함) |
 
@@ -208,10 +208,15 @@ agm_last_project/
 - 공개 저장소용 정리: 문서에서 내 PC 경로, 참고 폴더 메모, 점검용 계정 이름, 점검 스크립트 안내를 지움
 - 기존 공개 저장소 `yono7391-cell/emotion_drawer`(README 커밋 1개)에 이어서 푸시 완료. 커밋 작성자는 이 저장소에만 GitHub noreply 주소로 설정
 
-### 2026-11-10 ⑩ Railway 배포 준비 (코드 수정 완료, 푸시 전)
+### 2026-11-10 ⑩ Railway 배포 (완료)
 
 - 백업: `backup/2026-11-10_배포전/`
 - 배포 방식: 워크북 3-4의 'Claude Code → Railway'. Railway Volume을 쓰면 SQLite를 그대로 쓸 수 있어 DB를 바꾸지 않음
 - 고친 것: `config.py` DB 위치를 `DATABASE_PATH`로 지정 가능(없으면 기존 위치), `TRUST_PROXY`·`SESSION_COOKIE_SECURE` 추가 / `init_db.py` schema.sql을 앱 폴더에서 읽도록 수정(DB를 다른 폴더에 두면 실패하던 문제), `init_database()` 함수로 분리 / `app.py` DB가 없으면 시작할 때 만듦, `TRUST_PROXY=1`이면 ProxyFix / `requirements.txt`에 gunicorn / `.python-version` 3.13 / `.env.example` 배포용 값 설명
 - 확인: 임시 경로로 init_db·앱 시작 시 DB 자동 생성, 프록시 헤더로 og:url이 https, 쿠키 Secure, 디버그 꺼짐, 서버 점검 45·41개 통과, 3.13 문법 확인, 로컬 DB 변경 없음. gunicorn은 Windows에서 실행되지 않아 로컬에서 확인 못 함
 - Railway 화면 설정(사용자): Root Directory `/emotion_drawer`, Volume `/data`, 시작 명령 `gunicorn app:app --preload --workers 2 --bind 0.0.0.0:$PORT`, 변수 `SECRET_KEY`·`DATABASE_PATH=/data/emotion_drawer.db`·`FLASK_DEBUG=0`·`TRUST_PROXY=1`·`SESSION_COOKIE_SECURE=1`
+- GitHub 첫 커밋(README)의 작성자 이메일을 noreply로 바꿔 강제 푸시(사용자가 직접 실행). 커밋 3개 모두 noreply 확인
+- 공개 주소: https://emotiondrawer-production.up.railway.app
+- 배포 확인: 공개 화면 7개 200, 로그인 필요 화면 3개는 로그인으로 이동, 없는 주소 404, http → https 이동, og:url https, 세션 쿠키 Secure·HttpOnly, 디버그 화면 없음. 모바일(375px)에서 체험 4단계 → 완료 요약까지 진행, 체험 중 서버로 기록 전송 없음(GET만), 콘솔 오류 없음
+- 확인 못 함: 가입·로그인·기록 저장·회고·설정은 실제 서비스 DB라 점검용 계정을 만들지 않음 (사용자가 직접 확인)
+- D10 위기 상담 번호(109, 1577-0199): 공개 전 사용자가 연결되는 번호임을 확인함
