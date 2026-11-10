@@ -104,6 +104,8 @@ agm_last_project/
 | 머리말 | 로그인 시 [내 서랍] [설정] [로그아웃]. 420px 이하에서는 로그아웃·Plus 표시를 숨기고 설정 화면·내 서랍 화면에서 보여 줌 | 좁은 화면에서 머리말이 넘치지 않도록 |
 | 탭 아이콘 | `static/img/favicon.svg` + `/favicon.ico` 경로 | 브라우저가 자동으로 요청해 404가 쌓이던 문제 |
 | 입력 예시 글자 색 | `#6e665d` (흰 바탕 대비 5.6:1) | 원래 색은 3.7:1로 낮았음 |
+| 배포 설정 | `railway.json` 대신 Railway 화면에 시작 명령 입력. DB는 앱 시작 때 없으면 생성 | Railway의 설정 파일 방식(Config as Code)이 지원 종료 예정(2026-12-01), Volume은 pre-deploy 단계에 연결되지 않음 |
+| gunicorn `--preload` | 앱을 한 번만 만든 뒤 작업자에 나눔 | 작업자 2개가 동시에 DB를 만들려다 충돌하지 않도록 |
 
 ### 2-3. 구현 중 새로 쓴 문구 → PRD v3에 반영 완료
 
@@ -204,4 +206,12 @@ agm_last_project/
 
 - `.gitignore` 작성: `.env`, DB, `__pycache__`, `backup/`, `just_for_test/`, `.claude/`, `tests/` 제외 (PRD v1·v2·v3는 결정 과정 자료로 올림)
 - 공개 저장소용 정리: 문서에서 내 PC 경로, 참고 폴더 메모, 점검용 계정 이름, 점검 스크립트 안내를 지움
-- 남은 일: 기존 GitHub 저장소 `emotion_drawer`에 공개로 올리기 (git 사용자 정보 설정, 저장소 상태 확인 후)
+- 기존 공개 저장소 `yono7391-cell/emotion_drawer`(README 커밋 1개)에 이어서 푸시 완료. 커밋 작성자는 이 저장소에만 GitHub noreply 주소로 설정
+
+### 2026-11-10 ⑩ Railway 배포 준비 (코드 수정 완료, 푸시 전)
+
+- 백업: `backup/2026-11-10_배포전/`
+- 배포 방식: 워크북 3-4의 'Claude Code → Railway'. Railway Volume을 쓰면 SQLite를 그대로 쓸 수 있어 DB를 바꾸지 않음
+- 고친 것: `config.py` DB 위치를 `DATABASE_PATH`로 지정 가능(없으면 기존 위치), `TRUST_PROXY`·`SESSION_COOKIE_SECURE` 추가 / `init_db.py` schema.sql을 앱 폴더에서 읽도록 수정(DB를 다른 폴더에 두면 실패하던 문제), `init_database()` 함수로 분리 / `app.py` DB가 없으면 시작할 때 만듦, `TRUST_PROXY=1`이면 ProxyFix / `requirements.txt`에 gunicorn / `.python-version` 3.13 / `.env.example` 배포용 값 설명
+- 확인: 임시 경로로 init_db·앱 시작 시 DB 자동 생성, 프록시 헤더로 og:url이 https, 쿠키 Secure, 디버그 꺼짐, 서버 점검 45·41개 통과, 3.13 문법 확인, 로컬 DB 변경 없음. gunicorn은 Windows에서 실행되지 않아 로컬에서 확인 못 함
+- Railway 화면 설정(사용자): Root Directory `/emotion_drawer`, Volume `/data`, 시작 명령 `gunicorn app:app --preload --workers 2 --bind 0.0.0.0:$PORT`, 변수 `SECRET_KEY`·`DATABASE_PATH=/data/emotion_drawer.db`·`FLASK_DEBUG=0`·`TRUST_PROXY=1`·`SESSION_COOKIE_SECURE=1`

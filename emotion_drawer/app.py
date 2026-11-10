@@ -22,7 +22,17 @@ def create_app() -> Flask:
             ".env에 SECRET_KEY가 없어 임시 키를 사용합니다. 서버를 다시 켜면 로그인이 풀립니다."
         )
     if not Config.DATABASE.exists():
-        app.logger.warning("DB 파일이 없습니다. 먼저 python init_db.py 를 실행하세요.")
+        # 배포 환경에서는 Volume이 앱 시작 때 연결되므로, 이때 DB를 만든다 (여러 번 실행해도 안전)
+        import init_db
+
+        init_db.init_database(Config.DATABASE, verbose=False)
+        app.logger.warning("DB 파일이 없어 새로 만들었습니다.")
+
+    if app.config["TRUST_PROXY"]:
+        # HTTPS 프록시가 보낸 원래 주소·https 여부를 사용 (og:url 등 전체 주소가 https로 나오도록)
+        from werkzeug.middleware.proxy_fix import ProxyFix
+
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
     # JSON(FAQ 구조화 데이터 등)에서 한글을 그대로 보이게
     app.json.ensure_ascii = False

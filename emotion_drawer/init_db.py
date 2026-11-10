@@ -4,6 +4,8 @@
 사용자·기록 데이터는 건드리지 않는다.
 """
 
+from pathlib import Path
+
 from config import Config
 from db import connect
 
@@ -36,8 +38,15 @@ NEEDS = [
 
 
 def main() -> None:
-    schema = (Config.DATABASE.parent / "schema.sql").read_text(encoding="utf-8")
-    conn = connect(Config.DATABASE)
+    init_database()
+
+
+def init_database(path=None, verbose: bool = True) -> None:
+    """path 를 주지 않으면 설정의 DB 경로(Config.DATABASE)를 쓴다. 앱 시작 시 DB가 없을 때도 호출된다."""
+    path = Path(path or Config.DATABASE)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    schema = Config.SCHEMA.read_text(encoding="utf-8")
+    conn = connect(path)
     try:
         conn.executescript(schema)
         conn.executemany(
@@ -49,11 +58,13 @@ def main() -> None:
             [(code, label, i) for i, (code, label) in enumerate(NEEDS, start=1)],
         )
         conn.commit()
+        if not verbose:
+            return
 
         tables = [r["name"] for r in conn.execute(
             "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name"
         )]
-        print(f"DB: {Config.DATABASE.name}")
+        print(f"DB: {path.name}")
         for name in tables:
             count = conn.execute(f'SELECT COUNT(*) FROM "{name}"').fetchone()[0]
             print(f"  {name}: {count}행")

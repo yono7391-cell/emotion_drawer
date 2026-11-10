@@ -38,7 +38,7 @@ python app.py
 - 요구사항의 기준은 `PRD/감정서랍_PRD_v3.md`다. PRD에 없는 기능은 만들지 말고 먼저 물어볼 것.
 - 웹 서버는 Python Flask로 만든다. 웹앱은 `emotion_drawer` 폴더, 포트 5000.
 - 화면은 Jinja 템플릿 + 순수 CSS·JavaScript로 만든다. npm 같은 빌드 도구는 쓰지 않는다.
-- 데이터베이스는 `emotion_drawer/emotion_drawer.db` 하나만 쓴다. 테이블 구조는 PRD 5장을 따른다.
+- 데이터베이스는 SQLite 파일 하나만 쓴다. 로컬은 `emotion_drawer/emotion_drawer.db`, 배포(Railway)는 `DATABASE_PATH`로 지정한 Volume 안의 파일(`/data/emotion_drawer.db`). 테이블 구조는 PRD 5장을 따른다.
 - 비밀번호는 평문으로 저장하지 말고 해시로 저장할 것.
 - 화면 안내 문구는 PRD에 적힌 문장을 그대로 쓸 것. 말투는 해요체.
 - 감정·욕구 목록은 코드에 고정하지 말고 항상 DB(`emotions`, `needs`)에서 읽을 것.

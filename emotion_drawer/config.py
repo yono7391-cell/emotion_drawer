@@ -24,7 +24,13 @@ class Config:
     GA4_MEASUREMENT_ID = _read_ga4_id()
     DEBUG = os.environ.get("FLASK_DEBUG", "0").strip() == "1"
 
-    DATABASE = BASE_DIR / "emotion_drawer.db"
+    # 로컬은 앱 폴더의 emotion_drawer.db. 배포(Railway)에서는 DATABASE_PATH로 Volume 안 경로를 지정한다
+    DATABASE = Path(os.environ.get("DATABASE_PATH", "").strip() or BASE_DIR / "emotion_drawer.db")
+    SCHEMA = BASE_DIR / "schema.sql"
+
+    # 배포 환경에서만 1: HTTPS 프록시 뒤에서 https 주소를 쓰고, 로그인 쿠키를 HTTPS로만 보낸다
+    TRUST_PROXY = os.environ.get("TRUST_PROXY", "0").strip() == "1"
+    SESSION_COOKIE_SECURE = os.environ.get("SESSION_COOKIE_SECURE", "0").strip() == "1"
 
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"
