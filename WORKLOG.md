@@ -17,16 +17,16 @@
 | 원본 기획서 | `감정서랍_브랜드_성장전략_통합기획2.md` (ChatGPT로 작성, 로컬에만 보관, 저장소에는 올리지 않음) |
 | 기술 | Python 3.14.5, Flask 3.1.3, Flask-WTF 1.3.0(CSRF), python-dotenv, tzdata, SQLite, Jinja + 순수 CSS·JS (빌드 도구 없음) |
 | 실행 | `emotion_drawer/run.bat` 더블클릭 → http://localhost:5000 (Claude 앱에서는 `.claude/launch.json`의 `emotion-drawer`) |
-| **현재 진행** | **PLAN.md 1~4단계 모두 완료 (2026-11-09)**. PRD 9장 완료 기준 38개(2026-11-10 Organization 1개 추가) 중 37개 확인, 1개(GA4 실시간 보고서)는 측정 ID가 있어야 확인 가능. **2026-11-11 PRD v4(GTM 전환)로 완료 기준 39개, 측정 2개(GTM 미리보기·실시간 보고서) 남음. GTM 전환 1~3단계(문서·코드·GTM 컨테이너 설정·게시) 완료, 4단계(배포) 진행 중**. **2026-11-10 GitHub(`yono7391-cell/emotion_drawer`) 공개, Railway 배포 완료** (https://emotiondrawer-production.up.railway.app) |
+| **현재 진행** | **PLAN.md 1~4단계 모두 완료 (2026-11-09)**. PRD 9장 완료 기준 38개(2026-11-10 Organization 1개 추가) 중 37개 확인, 1개(GA4 실시간 보고서)는 측정 ID가 있어야 확인 가능. **2026-11-11 PRD v4(GTM 전환)로 완료 기준 39개 — 39개 모두 확인 (측정 2개는 사용자가 GTM 미리보기·GA4 실시간 보고서로 확인). GTM 전환 0~5단계 완료, 배포 사이트는 GTM → GA4로 측정 중**. **2026-11-10 GitHub(`yono7391-cell/emotion_drawer`) 공개, Railway 배포 완료** (https://emotiondrawer-production.up.railway.app) |
 | 백업 | `backup/2026-11-09_2단계전/`, `_3단계전/`, `_4단계전/`, `backup/2026-11-10_배포전/`, `_구조화데이터전/`, `backup/2026-11-11_GTM전/` |
 | DB 상태 | 감정 12개·욕구 8개만 있음. 사용자·기록 0건 (점검용 계정은 모두 삭제함) |
 
 ### 다음에 할 수 있는 일 (모두 선택 사항, 사용자 결정 필요)
 
-1. **GTM 전환 (진행 중, 작업 기록 ⑮·⑯)** — 0단계 GTM 컨테이너 만들기(사용자) **완료** / 1단계 문서(PRD v4·CLAUDE.md·PLAN·WORKLOG) **완료** / 2단계 코드(`config.py`·`app.py`·`base.html`·`analytics.js`·`.env.example`·`run.bat`, 로컬 `.env`에 컨테이너 ID) **완료** / 3단계 GTM 설정(사용자) **완료** / **4단계 배포 (진행 중)**: Railway에 `GTM_CONTAINER_ID` 추가 → 푸시 → `GA4_MEASUREMENT_ID` 삭제 순서 (코드보다 변수를 먼저 넣어야 측정이 끊기지 않음. 옛 코드는 GTM 변수를 읽지 않아 두 번 세어지지 않음) / (참고) 3단계 구성: Google 태그 1, 데이터 영역 변수 6, 맞춤 이벤트 트리거 9, GA4 이벤트 태그 9(태그마다 그 이벤트의 매개변수만), 미리보기 확인 후 게시 / 4단계 배포: 푸시 + Railway 변수 `GTM_CONTAINER_ID` 추가·`GA4_MEASUREMENT_ID` 삭제를 한 번의 배포로 / 5단계: GA4 실시간 보고서 확인, 주요 이벤트 `sign_up`·`entry_create`, 맞춤 측정기준(이벤트 범위) 6개 `location`·`step`·`from_try`·`is_first`·`entry_count_bucket`·`question_id`
+1. (참고) **GTM 전환은 0~5단계 모두 완료** (작업 기록 ⑮~⑲). 측정을 바꾸려면 코드가 아니라 GTM 컨테이너(태그·트리거·변수)를 고치고 게시한다. 로컬 `.env`에도 컨테이너 ID가 있어 로컬 테스트 데이터가 GA4에 들어감 — 원하지 않으면 로컬 값만 비움
 2. **공개 배포** (D8에서 나중으로 미룸): 배포 전 위기 상담 번호 재확인, `FLASK_DEBUG=0`, 분석 쿠키 동의 배너 재검토
 3. 실제 엑셀에서 CSV 열어 보기 (자동 점검에서는 BOM과 줄 수만 확인)
-4. 워크북 3-1 경로 도식은 A·B·C 모두 완료 (`just_for_test/경로*_도식.png`, 작업 기록 ⑫·⑬). 워크북에 넣는 일만 남음
+4. (참고) 워크북 3-1 경로 표 수정·도식 A·B·C 첨부 완료 (사용자, 작업 기록 ⑫~⑭). 3-6 이벤트 설계표는 감정서랍 이벤트 10개로 정리함(대화에서 제공)
 
 ---
 
@@ -130,7 +130,7 @@ agm_last_project/
 - 상세 화면의 삭제 확인 창(브라우저 `confirm`)은 직접 눌러 보지 않음. 삭제 자체는 서버 점검으로 확인
 - 로그인이 실제로 만료된 뒤 쓰던 글이 복구되는 흐름은 처음부터 끝까지 해 보지 않음 (로그인 화면 이동·안내 문구·임시 보관은 각각 확인)
 - 브라우저 저장소를 못 쓰는 환경(사생활 보호 모드)의 안내 문구는 확인하지 않음
-- GA4 실시간 보고서에서 이벤트 수신 확인 (PRD 9장 완료 기준 중 남은 항목). 지금 배포 사이트는 v3 방식(gtag)으로 연결됨(2026-11-11 확인). GTM으로 바꾼 뒤 v4 기준(GTM 미리보기 + 실시간 보고서)으로 확인할 예정
+- GA4 맞춤 측정기준 값(`location` 등)이 표준 보고서에 보이는지는 등록 후 24~48시간이 지나야 확인 가능 (2026-11-11 등록)
 - CSV를 실제 엑셀 프로그램에서 열어 보지는 않음 (BOM·한글·줄 수는 자동 점검), 브라우저에서 [내 기록 내려받기] 버튼 클릭으로 파일 받기도 해 보지 않음
 - Windows 콘솔에서 `init_db.py`의 한글 출력이 깨져 보일 수 있음 (Claude의 bash 출력에서만 확인됨, 동작에는 문제없음)
 
@@ -277,3 +277,14 @@ agm_last_project/
 - 만든 것: 데이터 영역 변수 6개(`DLV - 매개변수 이름`), 맞춤 이벤트 트리거 9개(`CE - 이벤트 이름`), Google 태그 1개(GA4 측정 ID, Initialization - All Pages, `page_view` 담당), GA4 이벤트 태그 9개(`GA4 - 이벤트 이름`, 태그마다 그 이벤트의 매개변수만)
 - 확인(사용자): 로컬에서 GTM 미리보기(Tag Assistant)로 태그 실행과 매개변수 값(`location` 등) 확인 → PRD v4 9장 'GTM 미리보기' 항목
 - 컨테이너 게시 완료. 이후 로컬 테스트 데이터도 GA4에 들어감 (원하지 않으면 로컬 `.env`의 `GTM_CONTAINER_ID`를 비움)
+
+### 2026-11-11 ⑱ GTM 전환 4단계 — 배포 (완료)
+
+- 순서: 사용자가 Railway에 `GTM_CONTAINER_ID` 추가·배포 → 커밋 `acc3418` 푸시 (약 40초 뒤 반영) → 사용자가 `GA4_MEASUREMENT_ID` 삭제. 삭제 후에도 사이트 200, GTM 스니펫 그대로, HTML에 GA4 측정 ID 없음
+- 확인: 배포 HTML에 GTM 스니펫·noscript 있고 예전 gtag 스니펫 없음. 브라우저에서 GTM 컨테이너 로드, GTM의 Google 태그가 gtag.js를 불러 GA4로 `page_view` 1번(중복 없음), FAQ 열기 → `faq_open`(`question_id=Q1`) 전송 확인 (`google-analytics.com/g/collect` 요청)
+
+### 2026-11-11 ⑲ GTM 전환 5단계 — GA4 설정 (사용자 작업, 완료)
+
+- 맞춤 측정기준(이벤트 범위) 6개 등록: `location`, `step`, `from_try`, `is_first`, `entry_count_bucket`, `question_id`
+- 배포 사이트에서 진행하며 GA4 실시간 보고서로 이벤트 수신 확인 → PRD v4 9장 마지막 측정 항목 충족, 완료 기준 39/39
+- 주요 이벤트 표시: `sign_up`, `entry_create`
