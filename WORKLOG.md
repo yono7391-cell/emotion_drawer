@@ -26,7 +26,8 @@
 1. (참고) **GTM 전환은 0~5단계 모두 완료** (작업 기록 ⑮~⑲). 측정을 바꾸려면 코드가 아니라 GTM 컨테이너(태그·트리거·변수)를 고치고 게시한다. 로컬 `.env`에도 컨테이너 ID가 있어 로컬 테스트 데이터가 GA4에 들어감 — 원하지 않으면 로컬 값만 비움
 2. **공개 배포** (D8에서 나중으로 미룸): 배포 전 위기 상담 번호 재확인, `FLASK_DEBUG=0`, 분석 쿠키 동의 배너 재검토
 3. 실제 엑셀에서 CSV 열어 보기 (자동 점검에서는 BOM과 줄 수만 확인)
-4. (참고) 워크북 3-1 경로 표 수정·도식 A·B·C 첨부 완료 (사용자, 작업 기록 ⑫~⑭). 3-6 이벤트 설계표는 감정서랍 이벤트 10개로 정리함(대화에서 제공)
+4. (참고) 워크북 3-1 경로 표 수정·도식 A·B·C 첨부 완료 (사용자, 작업 기록 ⑫~⑭). 3-6 이벤트 설계표·UTM 규칙 정리 (작업 기록 ⑳)
+5. UTM 링크로 실제 방문했을 때 GA4 실시간 보고서에 소스/매체·캠페인이 나뉘어 보이는지 확인 (테스트 방문도 GA4에 기록되므로 사용자가 직접, 링크 1개만 확인해도 됨)
 
 ---
 
@@ -110,6 +111,8 @@ agm_last_project/
 | 측정 설치 (PRD v4) | gtag 직접 삽입 → GTM 컨테이너. 코드는 `dataLayer`에 이벤트만 넣고, GA4 전송은 GTM에서 설정. 이벤트 이름·매개변수는 그대로 | 워크북 3-6이 GTM 설치를 요구. 이름이 같아 GA4의 주요 이벤트·맞춤 측정기준 설정을 그대로 쓸 수 있음 |
 | GTM 이벤트 태그 매개변수 | 태그마다 그 이벤트의 매개변수만 연결 | `dataLayer`는 앞서 넣은 값을 기억해서, 모든 태그에 6개를 다 연결하면 예전 값(예: `from_try`)이 다른 이벤트에 섞여 나감 |
 | 측정 설정 값 위치 | GTM 컨테이너 ID는 `.env`·Railway 변수에만, GA4 측정 ID는 GTM 컨테이너 안에만 | 코드 수정 없이 바꾸거나 끄기 위해. 로컬은 비워 두면 테스트 데이터가 GA4에 섞이지 않음 |
+| UTM medium 값 | 워크북 예시의 `content`·`crm` 대신 `paid_social`·`referral`·`email` | GA4 기본 채널 그룹이 아는 값이라 Paid Social·Referral·Email로 자동 분류됨 (`content`·`crm`은 Unassigned) |
+| UTM 링크 도착 주소 | 모든 채널을 랜딩(`/`)으로 | 로그인 필요 화면(`/drawer`·`/reflect`)은 로그인이 풀린 사람을 로그인 화면으로 넘기면서 주소의 `?utm_...`이 빠짐 (`next`에 경로만 넣음). 랜딩은 로그인 여부와 상관없이 UTM 주소 그대로 열리고, 로그인한 사람은 [내 서랍 열기](`cta_click` `hero_drawer`)로 이어짐 |
 
 ### 2-3. 구현 중 새로 쓴 문구 → PRD v3에 반영 완료
 
@@ -288,3 +291,23 @@ agm_last_project/
 - 맞춤 측정기준(이벤트 범위) 6개 등록: `location`, `step`, `from_try`, `is_first`, `entry_count_bucket`, `question_id`
 - 배포 사이트에서 진행하며 GA4 실시간 보고서로 이벤트 수신 확인 → PRD v4 9장 마지막 측정 항목 충족, 완료 기준 39/39
 - 주요 이벤트 표시: `sign_up`, `entry_create`
+
+### 2026-11-11 ⑳ 워크북 3-6 이벤트 설계표·UTM 규칙 (대화에서 정리, 워크북 작성은 사용자)
+
+- 3-6 이벤트 설계표 (이벤트명 | 언제 | 함께 보낼 정보 | 경로), 확인 완료는 GTM 미리보기 기준으로 모두 체크
+  - `page_view` 모든 페이지 열림 | 페이지 주소·유입 경로(자동) | A·B·C
+  - `cta_click` 랜딩의 체험·로그인 버튼 클릭 | `location` (hero / try_section / bottom / hero_login) | A·B (`hero_drawer`는 로그인 사용자의 [내 서랍 열기], 표에서는 뺌)
+  - `try_start` 체험 화면 진입 | 없음 | A / `try_step_complete` [다음] | `step` 1~4 | A / `try_complete` 마무리 화면 | 없음 | A
+  - `sign_up` 가입 완료 | `from_try` | A·B / `entry_create` 기록 저장(체험 보관 포함) | `is_first` | A·B·C
+  - `reflect_view` 회고 진입(기록 3개 이상) | `entry_count_bucket` | C / `faq_open` FAQ 열기 | `question_id` | B / `pricing_view` 요금 섹션 보임 | 없음 | B
+  - 워크북 예시의 `click_cta`는 감정서랍에서 `cta_click`(PRD F9 이름), '가입 방법' 대신 `from_try`
+- UTM 규칙 (소문자, 밑줄, campaign은 '유도하는 것_내용', 개인 정보 금지, 도착 주소는 모두 랜딩)
+
+  | 채널 | 경로 | utm_source | utm_medium | utm_campaign |
+  |---|---|---|---|---|
+  | 인스타그램 광고 | A | instagram | paid_social | try_4step |
+  | 네이버 블로그 | B | naver_blog | referral | faq_guide |
+  | 이메일 소식 (발송 기능은 범위 밖, 생기면 사용) | C | newsletter | email | reflect_reminder |
+
+  - 완성 링크 = 배포 주소 `/` + `?utm_source=…&utm_medium=…&utm_campaign=…`
+- 확인: 세 링크 모두 배포 사이트에서 200, 리다이렉트 없음, 랜딩·GTM 스니펫 정상 (curl). GA4 채널 분류는 테스트 방문이 기록에 남아 확인하지 않음 (0장 다음 할 일 5번)
