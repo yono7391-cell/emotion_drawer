@@ -4,7 +4,7 @@ cd /d "%~dp0"
 
 if not exist .env (
   echo [setup] Creating .env with a new SECRET_KEY...
-  python -c "import secrets; print('SECRET_KEY=' + secrets.token_hex(32)); print('GA4_MEASUREMENT_ID='); print('FLASK_DEBUG=1')" > .env
+  python -c "import secrets; print('SECRET_KEY=' + secrets.token_hex(32)); print('GTM_CONTAINER_ID='); print('FLASK_DEBUG=1')" > .env
 )
 
 echo [setup] Installing packages...

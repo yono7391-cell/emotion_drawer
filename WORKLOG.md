@@ -1,7 +1,7 @@
 # 감정서랍 작업 로그 (WORKLOG)
 
 > 이 문서는 지금까지의 작업 과정과 결정, 현재 상태를 기록한다.
-> 다른 AI(또는 새 대화)로 작업을 넘길 때 **이 문서 → CLAUDE.md → PRD v3 → PLAN.md** 순서로 읽으면 이어서 진행할 수 있다.
+> 다른 AI(또는 새 대화)로 작업을 넘길 때 **이 문서 → CLAUDE.md → PRD v4 → PLAN.md** 순서로 읽으면 이어서 진행할 수 있다.
 > 단계가 끝날 때마다 맨 아래 '작업 기록'에 한 항목씩 추가한다.
 
 ---
@@ -11,21 +11,22 @@
 | 항목 | 내용 |
 |---|---|
 | 프로젝트 | 감정서랍 — 상황 → 생각 → 감정 → 욕구 4단계 질문으로 감정을 기록·회고하는 웹앱 + 랜딩페이지 (수업 AGM 프로젝트, 가상 서비스) |
-| 요구사항 기준 | `PRD/감정서랍_PRD_v3.md` (v1·v2는 이전 판, 참고용). 화면 문구 전체는 v3 11장 |
+| 요구사항 기준 | `PRD/감정서랍_PRD_v4.md` (v1~v3는 이전 판, 참고용. v4는 측정 설치를 GTM으로 바꾼 판). 화면 문구 전체는 11장 |
 | 구현 계획 | `PLAN.md` (4단계) |
 | 작업 규칙 | `CLAUDE.md`의 '프로젝트 공통 규칙' |
 | 원본 기획서 | `감정서랍_브랜드_성장전략_통합기획2.md` (ChatGPT로 작성, 로컬에만 보관, 저장소에는 올리지 않음) |
 | 기술 | Python 3.14.5, Flask 3.1.3, Flask-WTF 1.3.0(CSRF), python-dotenv, tzdata, SQLite, Jinja + 순수 CSS·JS (빌드 도구 없음) |
 | 실행 | `emotion_drawer/run.bat` 더블클릭 → http://localhost:5000 (Claude 앱에서는 `.claude/launch.json`의 `emotion-drawer`) |
-| **현재 진행** | **PLAN.md 1~4단계 모두 완료 (2026-11-09)**. PRD 9장 완료 기준 38개(2026-11-10 Organization 1개 추가) 중 37개 확인, 1개(GA4 실시간 보고서)는 측정 ID가 있어야 확인 가능. **2026-11-10 GitHub(`yono7391-cell/emotion_drawer`) 공개, Railway 배포 완료** (https://emotiondrawer-production.up.railway.app) |
-| 백업 | `backup/2026-11-09_2단계전/`, `_3단계전/`, `_4단계전/` |
+| **현재 진행** | **PLAN.md 1~4단계 모두 완료 (2026-11-09)**. PRD 9장 완료 기준 38개(2026-11-10 Organization 1개 추가) 중 37개 확인, 1개(GA4 실시간 보고서)는 측정 ID가 있어야 확인 가능. **2026-11-11 PRD v4(GTM 전환)로 완료 기준 39개, 측정 2개(GTM 미리보기·실시간 보고서) 남음. GTM 전환 1~3단계(문서·코드·GTM 컨테이너 설정·게시) 완료, 4단계(배포) 진행 중**. **2026-11-10 GitHub(`yono7391-cell/emotion_drawer`) 공개, Railway 배포 완료** (https://emotiondrawer-production.up.railway.app) |
+| 백업 | `backup/2026-11-09_2단계전/`, `_3단계전/`, `_4단계전/`, `backup/2026-11-10_배포전/`, `_구조화데이터전/`, `backup/2026-11-11_GTM전/` |
 | DB 상태 | 감정 12개·욕구 8개만 있음. 사용자·기록 0건 (점검용 계정은 모두 삭제함) |
 
 ### 다음에 할 수 있는 일 (모두 선택 사항, 사용자 결정 필요)
 
-1. **GA4 측정 ID 연결**: `emotion_drawer/.env`의 `GA4_MEASUREMENT_ID=G-...` 에 넣고 서버 재시작 → GA4 실시간 보고서에서 `try_start`, `try_complete`, `sign_up`, `entry_create` 확인 (PRD 9장 측정 마지막 항목)
+1. **GTM 전환 (진행 중, 작업 기록 ⑮·⑯)** — 0단계 GTM 컨테이너 만들기(사용자) **완료** / 1단계 문서(PRD v4·CLAUDE.md·PLAN·WORKLOG) **완료** / 2단계 코드(`config.py`·`app.py`·`base.html`·`analytics.js`·`.env.example`·`run.bat`, 로컬 `.env`에 컨테이너 ID) **완료** / 3단계 GTM 설정(사용자) **완료** / **4단계 배포 (진행 중)**: Railway에 `GTM_CONTAINER_ID` 추가 → 푸시 → `GA4_MEASUREMENT_ID` 삭제 순서 (코드보다 변수를 먼저 넣어야 측정이 끊기지 않음. 옛 코드는 GTM 변수를 읽지 않아 두 번 세어지지 않음) / (참고) 3단계 구성: Google 태그 1, 데이터 영역 변수 6, 맞춤 이벤트 트리거 9, GA4 이벤트 태그 9(태그마다 그 이벤트의 매개변수만), 미리보기 확인 후 게시 / 4단계 배포: 푸시 + Railway 변수 `GTM_CONTAINER_ID` 추가·`GA4_MEASUREMENT_ID` 삭제를 한 번의 배포로 / 5단계: GA4 실시간 보고서 확인, 주요 이벤트 `sign_up`·`entry_create`, 맞춤 측정기준(이벤트 범위) 6개 `location`·`step`·`from_try`·`is_first`·`entry_count_bucket`·`question_id`
 2. **공개 배포** (D8에서 나중으로 미룸): 배포 전 위기 상담 번호 재확인, `FLASK_DEBUG=0`, 분석 쿠키 동의 배너 재검토
 3. 실제 엑셀에서 CSV 열어 보기 (자동 점검에서는 BOM과 줄 수만 확인)
+4. 워크북 3-1 경로 도식은 A·B·C 모두 완료 (`just_for_test/경로*_도식.png`, 작업 기록 ⑫·⑬). 워크북에 넣는 일만 남음
 
 ---
 
@@ -41,7 +42,7 @@ agm_last_project/
 ├─ .claude/launch.json Claude 앱 미리보기 서버 설정
 └─ emotion_drawer/
    ├─ app.py           앱 생성, 블루프린트·CSRF 등록, 공통 화면 정보, 오류 처리
-   ├─ config.py        .env 읽기 (SECRET_KEY, GA4_MEASUREMENT_ID 형식 검사, FLASK_DEBUG)
+   ├─ config.py        .env 읽기 (SECRET_KEY, GTM_CONTAINER_ID 형식 검사, FLASK_DEBUG 등)
    ├─ db.py            DB 연결(외래 키 ON), 한국 시간 함수
    ├─ schema.sql / init_db.py   테이블 5개 + 감정·욕구 목록 (여러 번 실행해도 안전)
    ├─ content.py       모든 화면 문구 (PRD v3 문장 그대로, 4장 문구는 'PRD', 11장 문구는 'PRD v3 11장' 표시)
@@ -84,7 +85,7 @@ agm_last_project/
 | 체험 기록 | 브라우저 localStorage `ed_try_draft`에만 저장, 24시간 지나면 삭제. [보관하기]를 눌러야 `/drawer/import-try`로 전송 | PRD F2-9·F2-10, 규칙 "체험 기록은 서버로 보내지 말 것" |
 | 작성 중 임시 보관 | 새 기록 `ed_write_draft`, 수정 `ed_edit_draft_<id>`. 입력을 바꿨을 때만 저장. 저장 성공·로그아웃 시 서버가 세션 `clear_drafts`로 다음 화면에서 삭제 지시 | 같은 기기를 쓰는 다른 사람이 보지 않도록 (F2-11) |
 | GA4 서버 이벤트 | 가입·저장처럼 서버에서 생긴 일은 세션 `ga_events`에 넣고 `base.html`이 다음 화면에서 `track()` 호출 | 서버는 GA4로 직접 못 보냄. 매개변수는 `from_try`, `is_first`처럼 내용 없는 값만 |
-| GA4 측정 ID | `G-` 형식이 아니면 무시, 비어 있으면 GA4 스크립트 자체를 넣지 않음 | 규칙 + 스크립트 주입 방지 |
+| GA4 측정 ID | `G-` 형식이 아니면 무시, 비어 있으면 GA4 스크립트 자체를 넣지 않음 (v3 기준. v4에서는 같은 방식으로 GTM 컨테이너 ID를 `GTM-` 형식만) | 규칙 + 스크립트 주입 방지 |
 | 필터·검색 조건 | 주소(URL)가 아니라 세션 `drawer_filter`에 저장 (`POST /drawer/filter`) | 감정 이름·검색어가 주소창·서버 로그·GA4 페이지 주소에 남지 않도록 |
 | Plus 판단 | `plans.plan_status()` 하나로 화면·서버 모두 판단. 무료 사용자가 보낸 검색어는 서버에서 무시 | F6-4 |
 | 다른 사람 기록 | `WHERE id = ? AND user_id = ?`, 없으면 404 "기록을 찾을 수 없어요." | F4-10 |
@@ -106,6 +107,9 @@ agm_last_project/
 | 입력 예시 글자 색 | `#6e665d` (흰 바탕 대비 5.6:1) | 원래 색은 3.7:1로 낮았음 |
 | 배포 설정 | `railway.json` 대신 Railway 화면에 시작 명령 입력. DB는 앱 시작 때 없으면 생성 | Railway의 설정 파일 방식(Config as Code)이 지원 종료 예정(2026-12-01), Volume은 pre-deploy 단계에 연결되지 않음 |
 | gunicorn `--preload` | 앱을 한 번만 만든 뒤 작업자에 나눔 | 작업자 2개가 동시에 DB를 만들려다 충돌하지 않도록 |
+| 측정 설치 (PRD v4) | gtag 직접 삽입 → GTM 컨테이너. 코드는 `dataLayer`에 이벤트만 넣고, GA4 전송은 GTM에서 설정. 이벤트 이름·매개변수는 그대로 | 워크북 3-6이 GTM 설치를 요구. 이름이 같아 GA4의 주요 이벤트·맞춤 측정기준 설정을 그대로 쓸 수 있음 |
+| GTM 이벤트 태그 매개변수 | 태그마다 그 이벤트의 매개변수만 연결 | `dataLayer`는 앞서 넣은 값을 기억해서, 모든 태그에 6개를 다 연결하면 예전 값(예: `from_try`)이 다른 이벤트에 섞여 나감 |
+| 측정 설정 값 위치 | GTM 컨테이너 ID는 `.env`·Railway 변수에만, GA4 측정 ID는 GTM 컨테이너 안에만 | 코드 수정 없이 바꾸거나 끄기 위해. 로컬은 비워 두면 테스트 데이터가 GA4에 섞이지 않음 |
 
 ### 2-3. 구현 중 새로 쓴 문구 → PRD v3에 반영 완료
 
@@ -126,7 +130,7 @@ agm_last_project/
 - 상세 화면의 삭제 확인 창(브라우저 `confirm`)은 직접 눌러 보지 않음. 삭제 자체는 서버 점검으로 확인
 - 로그인이 실제로 만료된 뒤 쓰던 글이 복구되는 흐름은 처음부터 끝까지 해 보지 않음 (로그인 화면 이동·안내 문구·임시 보관은 각각 확인)
 - 브라우저 저장소를 못 쓰는 환경(사생활 보호 모드)의 안내 문구는 확인하지 않음
-- 실제 GA4 측정 ID로 실시간 보고서 확인은 측정 ID를 받은 뒤 (PRD 9장 37개 중 유일하게 남은 항목)
+- GA4 실시간 보고서에서 이벤트 수신 확인 (PRD 9장 완료 기준 중 남은 항목). 지금 배포 사이트는 v3 방식(gtag)으로 연결됨(2026-11-11 확인). GTM으로 바꾼 뒤 v4 기준(GTM 미리보기 + 실시간 보고서)으로 확인할 예정
 - CSV를 실제 엑셀 프로그램에서 열어 보지는 않음 (BOM·한글·줄 수는 자동 점검), 브라우저에서 [내 기록 내려받기] 버튼 클릭으로 파일 받기도 해 보지 않음
 - Windows 콘솔에서 `init_db.py`의 한글 출력이 깨져 보일 수 있음 (Claude의 bash 출력에서만 확인됨, 동작에는 문제없음)
 
@@ -229,3 +233,47 @@ agm_last_project/
 - FAQPage는 1단계에서 이미 넣어 둠(질문 8개). 구글은 2023년부터 FAQ 리치 결과를 정부·건강 분야의 공신력 있는 사이트에만 보여 줘서 검색 결과에 펼쳐 보이지 않을 수 있음
 - 확인: 로컬에서 두 블록 JSON 형식, 로고 파일 200, 서버 점검 45·41개 통과
 - 배포 확인: 푸시 후 약 45초 뒤 배포 주소에 반영. Organization의 url·logo가 https 배포 주소로 나옴. Schema Markup Validator(validator.schema.org)에서 Organization·FAQPage 2개 오류 0·경고 0
+
+### 2026-11-11 ⑫ 워크북 3-1 경로 B 도식 (2단계 계획 중 1단계, 완료)
+
+- 계획: 1단계 경로 B(검색·AI → 가입), 2단계 경로 C(재방문 → 기록 → 회고). 경로 A 도식(`just_for_test/경로A_체험가입_도식.png`)과 같은 모양
+- 결정: PRD는 고치지 않음. 로그인 이벤트·재방문율 측정은 추가하지 않음 (`login`은 로그인 상태가 유지되면 재방문을 다 세지 못하고, 재방문율은 CRM 지표라 PRD 2-2에서 뺌. 재방문 여부는 GA4 기본 보고서로 봄). 이벤트는 PRD v3 F9 표에 있는 것만 씀
+- 만든 것: `just_for_test/경로B_검색가입_도식.png`(2400×1180), 원본 `just_for_test/도식_원본/경로B_검색가입_도식.html`. 경로 A 원본은 없어서 HTML로 모양을 다시 만들고 Edge headless(`--force-device-scale-factor=2 --window-size=1200,590 --screenshot`)로 PNG 저장
+- 내용: ① 랜딩 도착 `page_view` → ② FAQ·요금표 `faq_open`·`pricing_view` → ③ 로그인 화면 `cta_click(hero_login)` → ④ 회원가입 `sign_up(from_try=false)` → ⑤ 첫 기록 저장(목표) `entry_create(is_first=true)`. 이탈 지점 4곳, 가장 높음은 '요금 확인 → 가입 시작'
+- 코드에서 확인한 사실: 랜딩에 가입 버튼이 따로 없음 (F1-3대로 히어로 보조 버튼은 [로그인]). 가입하려면 로그인 화면 아래 '가입하기'로 들어감. 머리말 [로그인]은 `cta_click`을 보내지 않음 → 도식 하단 메모에 적음
+- 확인: PNG를 열어 글자 잘림·겹침 없음 확인 (처음에는 카드 아래 매개변수와 이탈 박스 마지막 줄이 잘려 고침)
+
+### 2026-11-11 ⑬ 워크북 3-1 경로 C 도식 (2단계, 완료)
+
+- 만든 것: `just_for_test/경로C_재방문회고_도식.png`(2400×1180), 원본 `just_for_test/도식_원본/경로C_재방문회고_도식.html` (B와 같은 스타일, 카드 4개)
+- 내용: ① 재방문·로그인 `page_view(/login)` → ② 내 서랍 `page_view(/drawer)` → ③ 새 기록 저장 `entry_create(is_first=false)` → ④ 회고(목표) `reflect_view(entry_count_bucket)`. 이탈 지점 3곳, 가장 높음은 '기록 → 회고'(확인 방법은 PRD 2-2 회고 진입률). '재방문하지 않음'은 이탈 지점에 넣지 않음 (재방문율은 측정 범위 밖)
+- 코드에서 확인한 사실: 로그인 7일 유지(`PERMANENT_SESSION_LIFETIME`), 기록 저장 후 기록 상세 화면으로 이동, 회고로 가는 버튼은 기록 3개 이상일 때 내 서랍 위 안내의 [회고 보기]뿐(머리말에는 없음), `reflect_view`는 기록 3개 이상이고 잠기지 않은 기간일 때만 보냄
+- 확인: PNG를 열어 글자 잘림·겹침 없음 확인
+
+### 2026-11-11 ⑭ 워크북 반영·GA4 연결 (사용자 작업)
+
+- 사용자가 워크북 3-1 경로 표를 고치고 경로 A·B·C 도식을 첨부함
+- 사용자가 GA4 속성을 만들어 배포 사이트에 측정 ID를 연결함 (Railway 변수, 측정 ID는 문서에 적지 않음). 데이터 보관 기간 14개월로 설정
+- 확인(Claude): 배포 랜딩 페이지 소스에 gtag 스크립트와 측정 ID가 들어 있음
+- 남은 것: 이벤트 수신 테스트, 주요 이벤트 표시, 맞춤 측정기준 등록 (0장 '다음에 할 수 있는 일' 1번)
+
+### 2026-11-11 ⑮ GTM 전환 1단계 — 문서 (완료)
+
+- 이유: 워크북 3-6 '이벤트 설계표'가 GTM 설치를 요구. 전체 계획은 0장 '다음에 할 수 있는 일' 1번 (0~5단계)
+- 만든 것: `PRD/감정서랍_PRD_v4.md` (v3를 복사해 13곳 수정). 맨 위 'v4 변경 요약' W1~W4, 1-4 범위, F7-6, F9 제목·설명(GTM 스니펫만, `GTM_CONTAINER_ID`·`GTM-` 형식, `dataLayer` 형태, `page_view`는 Google 태그가 자동, 태그마다 그 이벤트의 매개변수만), 6장 배포 준비, 9장 측정 항목(GTM 미리보기 항목 추가로 완료 기준 38 → 39개), 10-1 D9, 10-3 컨테이너 ID 형식
+- 고친 것: CLAUDE.md(기준 문서 v4, GA4 이벤트 규칙에 `dataLayer` 포함, 설정 값 규칙을 GTM 컨테이너 ID로), PLAN.md(기준 문서 v4, GA4 내용은 v3 기준이라는 안내), WORKLOG(기준 문서, 다음 할 일, 2-2 결정 3개, 3장)
+- 코드·배포는 아직 그대로 (v3 방식 gtag로 측정 중)
+
+### 2026-11-11 ⑯ GTM 전환 2단계 — 코드 (완료)
+
+- 백업: `backup/2026-11-11_GTM전/`
+- 고친 것: `config.py` `GTM_CONTAINER_ID` 읽기·`^GTM-[A-Z0-9]{4,12}$` 검사(맞지 않으면 빈 값) / `app.py` 템플릿 값 `ga_id` → `gtm_id` / `base.html` gtag 스크립트 삭제, `<head>` 위쪽에 GTM 스니펫, `<body>` 바로 뒤 `noscript` / `analytics.js` `dataLayer.push({event: 이름, ...매개변수})`, `dataLayer`가 없으면(GTM 없음) 아무것도 안 함 / `.env.example`·`run.bat`(새 `.env` 만들 때 키 이름) `GTM_CONTAINER_ID`로
+- 로컬 `.env`: `GA4_MEASUREMENT_ID` 줄 삭제(원래 비어 있었음), `GTM_CONTAINER_ID` 추가. 컨테이너 ID는 `.env` 밖 어느 파일에도 없음(검색 확인)
+- 확인: 서버 점검 45·41개 통과(G4 매개변수 허용 목록 포함) / 테스트 클라이언트로 랜딩 HTML: ID 비움·`G-` 형식·스크립트 주입 문자열이면 GTM 스크립트·noscript 없음, 올바른 ID면 둘 다 있음, 어느 경우든 gtag 스크립트 없음 / 브라우저(로컬): `dataLayer`에 `gtm.js`·`faq_open(question_id)`·`pricing_view`·`cta_click(location: hero·hero_login·bottom)`·`try_start`·`try_step_complete(step 1~4)`·`try_complete` 쌓임, 콘솔 오류 없음 / 임시 DB로 가입·저장·회고 뒤 다음 화면에 `sign_up(from_try)`·`entry_create(is_first)`·`reflect_view(entry_count_bucket)` 호출이 GTM 스니펫·analytics.js 뒤에 나옴
+- 확인 못 함: ID를 비운 상태에서 브라우저 네트워크 탭 확인(HTML에 스크립트가 없는 것으로 대신), GA4로 실제 전송(3단계 GTM 태그 설정 전이라 아직 아무것도 GA4로 가지 않음)
+
+### 2026-11-11 ⑰ GTM 전환 3단계 — GTM 컨테이너 설정 (사용자 작업, 완료)
+
+- 만든 것: 데이터 영역 변수 6개(`DLV - 매개변수 이름`), 맞춤 이벤트 트리거 9개(`CE - 이벤트 이름`), Google 태그 1개(GA4 측정 ID, Initialization - All Pages, `page_view` 담당), GA4 이벤트 태그 9개(`GA4 - 이벤트 이름`, 태그마다 그 이벤트의 매개변수만)
+- 확인(사용자): 로컬에서 GTM 미리보기(Tag Assistant)로 태그 실행과 매개변수 값(`location` 등) 확인 → PRD v4 9장 'GTM 미리보기' 항목
+- 컨테이너 게시 완료. 이후 로컬 테스트 데이터도 GA4에 들어감 (원하지 않으면 로컬 `.env`의 `GTM_CONTAINER_ID`를 비움)

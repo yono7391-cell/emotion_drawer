@@ -1,4 +1,5 @@
-"""설정 값은 모두 .env 에서 읽는다. 비밀 키와 GA4 측정 ID를 코드에 직접 쓰지 않는다."""
+"""설정 값은 모두 .env 에서 읽는다. 비밀 키와 GTM 컨테이너 ID를 코드에 직접 쓰지 않는다.
+GA4 측정 ID는 코드·설정 파일이 아니라 GTM 컨테이너 안에만 둔다 (PRD v4 F9)."""
 
 import os
 import re
@@ -10,18 +11,18 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env")
 
-_GA4_ID_PATTERN = re.compile(r"^G-[A-Z0-9]{4,20}$")
+_GTM_ID_PATTERN = re.compile(r"^GTM-[A-Z0-9]{4,12}$")
 
 
-def _read_ga4_id() -> str:
-    value = os.environ.get("GA4_MEASUREMENT_ID", "").strip()
+def _read_gtm_id() -> str:
+    value = os.environ.get("GTM_CONTAINER_ID", "").strip()
     # 형식이 맞지 않는 값은 페이지에 넣지 않는다 (스크립트에 임의 문자열이 들어가는 것 방지)
-    return value if _GA4_ID_PATTERN.match(value) else ""
+    return value if _GTM_ID_PATTERN.match(value) else ""
 
 
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", "").strip()
-    GA4_MEASUREMENT_ID = _read_ga4_id()
+    GTM_CONTAINER_ID = _read_gtm_id()
     DEBUG = os.environ.get("FLASK_DEBUG", "0").strip() == "1"
 
     # 로컬은 앱 폴더의 emotion_drawer.db. 배포(Railway)에서는 DATABASE_PATH로 Volume 안 경로를 지정한다

@@ -62,7 +62,7 @@ def create_app() -> Flask:
 
         user = g.get("user")
         return {
-            "ga_id": app.config["GA4_MEASUREMENT_ID"],
+            "gtm_id": app.config["GTM_CONTAINER_ID"],
             "current_user": user,
             "plan": plan_status(user) if user else None,
             # 한 번만 쓰는 표시: 다음 화면에서 꺼내 쓰고 지운다

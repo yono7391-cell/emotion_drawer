@@ -3,6 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% if gtm_id %}
+  <!-- Google 태그 관리자 (PRD v4 F9). GA4로 보내는 설정은 GTM 컨테이너에서 한다 -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer',{{ gtm_id|tojson }});</script>
+  {% endif %}
   <title>{% block title %}감정서랍{% endblock %}</title>
   <meta name="description" content="{% block description %}감정을 기록하고 나를 이해하는 자기 성찰 플랫폼{% endblock %}">
   {% block meta %}{% endblock %}
@@ -10,15 +14,6 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  {% if ga_id %}
-  <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_id }}"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', {{ ga_id|tojson }});
-  </script>
-  {% endif %}
   <script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
   {% if clear_drafts %}
   <script>
@@ -40,6 +35,9 @@
   {% endif %}
 </head>
 <body>
+  {% if gtm_id %}
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ gtm_id }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  {% endif %}
   <a class="skip-link" href="#main">본문으로 건너뛰기</a>
 
   <header class="site-header">
