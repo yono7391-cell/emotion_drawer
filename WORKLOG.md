@@ -17,13 +17,13 @@
 | 원본 기획서 | `감정서랍_브랜드_성장전략_통합기획2.md` (ChatGPT로 작성, 로컬에만 보관, 저장소에는 올리지 않음) |
 | 기술 | Python 3.14.5, Flask 3.1.3, Flask-WTF 1.3.0(CSRF), python-dotenv, tzdata, SQLite, Jinja + 순수 CSS·JS (빌드 도구 없음) |
 | 실행 | `emotion_drawer/run.bat` 더블클릭 → http://localhost:5000 (Claude 앱에서는 `.claude/launch.json`의 `emotion-drawer`) |
-| **현재 진행** | **PLAN.md 1~4단계 모두 완료 (2026-11-09)**. PRD 9장 완료 기준 38개(2026-11-10 Organization 1개 추가) 중 37개 확인, 1개(GA4 실시간 보고서)는 측정 ID가 있어야 확인 가능. **2026-11-11 PRD v4(GTM 전환)로 완료 기준 39개 — 39개 모두 확인 (측정 2개는 사용자가 GTM 미리보기·GA4 실시간 보고서로 확인). GTM 전환 0~5단계 완료, 배포 사이트는 GTM → GA4로 측정 중**. **2026-11-10 GitHub(`yono7391-cell/emotion_drawer`) 공개, Railway 배포 완료** (https://emotiondrawer-production.up.railway.app). **2026-11-16 AEO/SEO 점검 → PRD v5(검색 노출 관리 F10, 완료 기준 46개) 작성·구현·배포 완료 (커밋 `0d055d2`). 46개 중 44개 확인, 남은 2개는 사용자 작업: Schema Markup Validator 재검사, Search Console 등록·사이트맵 제출** |
+| **현재 진행** | **PLAN.md 1~4단계 모두 완료 (2026-11-09)**. PRD 9장 완료 기준 38개(2026-11-10 Organization 1개 추가) 중 37개 확인, 1개(GA4 실시간 보고서)는 측정 ID가 있어야 확인 가능. **2026-11-11 PRD v4(GTM 전환)로 완료 기준 39개 — 39개 모두 확인 (측정 2개는 사용자가 GTM 미리보기·GA4 실시간 보고서로 확인). GTM 전환 0~5단계 완료, 배포 사이트는 GTM → GA4로 측정 중**. **2026-11-10 GitHub(`yono7391-cell/emotion_drawer`) 공개, Railway 배포 완료** (https://emotiondrawer-production.up.railway.app). **2026-11-16 AEO/SEO 점검 → PRD v5(검색 노출 관리 F10, 완료 기준 46개) 작성·구현·배포 완료 (커밋 `0d055d2`). 46개 중 44개 확인. Search Console 등록·사이트맵 제출·`/` 색인 요청 완료(사용자) — 사이트맵 상태 '성공'과 Schema Markup Validator 재검사가 남음** |
 | 백업 | `backup/2026-11-09_2단계전/`, `_3단계전/`, `_4단계전/`, `backup/2026-11-10_배포전/`, `_구조화데이터전/`, `backup/2026-11-11_GTM전/`, `backup/2026-11-16_SEO전/` |
 | DB 상태 | 감정 12개·욕구 8개만 있음. 사용자·기록 0건 (점검용 계정은 모두 삭제함) |
 
 ### 다음에 할 수 있는 일 (모두 선택 사항, 사용자 결정 필요)
 
-0. **Search Console 등록** (작업 기록 ㉑~㉓, 배포 완료): 사용자가 URL 접두어 속성으로 배포 주소 등록 → 'Google 태그 관리자' 방식으로 소유권 확인 → `sitemap.xml` 제출 → URL 검사로 `/` 색인 요청. Schema Markup Validator(validator.schema.org)에 배포 주소를 넣어 Organization·WebSite·FAQPage 오류 0 확인
+0. **검색 노출 마무리** (작업 기록 ㉑~㉔): Search Console 'Sitemaps'에서 상태가 '성공'·발견된 페이지 5개인지 확인 (제출 직후 '가져올 수 없음'은 보통 하루 안에 바뀜) → Schema Markup Validator(validator.schema.org)에 배포 주소를 넣어 Organization·WebSite·FAQPage 오류 0 확인 → 며칠 뒤 '페이지' 보고서에서 공개 화면 5개 색인 여부 확인
 1. (참고) **GTM 전환은 0~5단계 모두 완료** (작업 기록 ⑮~⑲). 측정을 바꾸려면 코드가 아니라 GTM 컨테이너(태그·트리거·변수)를 고치고 게시한다. 로컬 `.env`에도 컨테이너 ID가 있어 로컬 테스트 데이터가 GA4에 들어감 — 원하지 않으면 로컬 값만 비움
 2. **공개 배포** (D8에서 나중으로 미룸): 배포 전 위기 상담 번호 재확인, `FLASK_DEBUG=0`, 분석 쿠키 동의 배너 재검토
 3. 실제 엑셀에서 CSV 열어 보기 (자동 점검에서는 BOM과 줄 수만 확인)
@@ -337,3 +337,8 @@ agm_last_project/
 - 커밋 `0d055d2` 푸시 → 약 55초 뒤 배포 주소에 반영
 - 확인(배포 주소): `/robots.txt` 200·text/plain, Disallow 3개, `Sitemap:` https 주소 / `/sitemap.xml` 200·application/xml, 공개 화면 5개 https 주소 / Googlebot·OAI-SearchBot UA로 `/`·`/robots.txt` 200 / 공개 화면 5개 canonical이 https 주소·noindex 없음 / `/?utm_source=test` canonical `/`, `/login?next=/drawer` canonical `/login` / `/login`·`/signup` noindex, 404 noindex·canonical 없음 / 로그인 필요 화면 5개 302 → 로그인 / meta description 5개가 `content.py` 문구와 같음 / 랜딩 JSON-LD Organization·WebSite·FAQPage, WebSite url https
 - 남은 것 (사용자): Schema Markup Validator 재검사, Search Console 등록·사이트맵 제출 (PRD v5 9장 마지막 2개)
+
+### 2026-11-16 ㉔ Google Search Console 등록 (사용자 작업)
+
+- 사용자가 Search Console에 속성을 등록하고 `sitemap.xml` 제출, URL 검사로 `/` 색인 생성 요청
+- 아직 모름: 사이트맵 처리 상태('성공'·발견된 페이지 5개), 실제 색인 반영 (며칠 걸릴 수 있음), Schema Markup Validator 재검사 → PRD v5 9장 검색 노출 마지막 2개는 이 확인 뒤 충족
