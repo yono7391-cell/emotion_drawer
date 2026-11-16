@@ -9,6 +9,11 @@
   {% endif %}
   <title>{% block title %}감정서랍{% endblock %}</title>
   <meta name="description" content="{% block description %}감정을 기록하고 나를 이해하는 자기 성찰 플랫폼{% endblock %}">
+  {# PRD v5 F10-3·F10-4: canonical은 주소 뒤 값(utm·next 등)을 뺀 주소, 색인 대상 5개 화면 외에는 noindex. 오류 화면은 이 블록을 바꾼다 #}
+  {% block seo %}
+  <link rel="canonical" href="{{ request.base_url }}">
+  {% if not seo_indexable %}<meta name="robots" content="noindex">{% endif %}
+  {% endblock %}
   {% block meta %}{% endblock %}
   <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>

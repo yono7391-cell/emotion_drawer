@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block title %}찾을 수 없어요 — 감정서랍{% endblock %}
+{# PRD v5 F10-4: 오류 화면은 canonical 없이 noindex #}
+{% block seo %}
+  <meta name="robots" content="noindex">
+{% endblock %}
 
 {% block content %}
 <section class="section page">

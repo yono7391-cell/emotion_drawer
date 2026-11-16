@@ -1,7 +1,7 @@
 # 감정서랍 작업 로그 (WORKLOG)
 
 > 이 문서는 지금까지의 작업 과정과 결정, 현재 상태를 기록한다.
-> 다른 AI(또는 새 대화)로 작업을 넘길 때 **이 문서 → CLAUDE.md → PRD v4 → PLAN.md** 순서로 읽으면 이어서 진행할 수 있다.
+> 다른 AI(또는 새 대화)로 작업을 넘길 때 **이 문서 → CLAUDE.md → PRD v5 → PLAN.md** 순서로 읽으면 이어서 진행할 수 있다.
 > 단계가 끝날 때마다 맨 아래 '작업 기록'에 한 항목씩 추가한다.
 
 ---
@@ -11,18 +11,19 @@
 | 항목 | 내용 |
 |---|---|
 | 프로젝트 | 감정서랍 — 상황 → 생각 → 감정 → 욕구 4단계 질문으로 감정을 기록·회고하는 웹앱 + 랜딩페이지 (수업 AGM 프로젝트, 가상 서비스) |
-| 요구사항 기준 | `PRD/감정서랍_PRD_v4.md` (v1~v3는 이전 판, 참고용. v4는 측정 설치를 GTM으로 바꾼 판). 화면 문구 전체는 11장 |
+| 요구사항 기준 | `PRD/감정서랍_PRD_v5.md` (v1~v4는 이전 판, 참고용. v4는 측정 설치를 GTM으로 바꾼 판, v5는 검색 노출 관리 F10을 더한 판). 화면 문구 전체는 11장 |
 | 구현 계획 | `PLAN.md` (4단계) |
 | 작업 규칙 | `CLAUDE.md`의 '프로젝트 공통 규칙' |
 | 원본 기획서 | `감정서랍_브랜드_성장전략_통합기획2.md` (ChatGPT로 작성, 로컬에만 보관, 저장소에는 올리지 않음) |
 | 기술 | Python 3.14.5, Flask 3.1.3, Flask-WTF 1.3.0(CSRF), python-dotenv, tzdata, SQLite, Jinja + 순수 CSS·JS (빌드 도구 없음) |
 | 실행 | `emotion_drawer/run.bat` 더블클릭 → http://localhost:5000 (Claude 앱에서는 `.claude/launch.json`의 `emotion-drawer`) |
-| **현재 진행** | **PLAN.md 1~4단계 모두 완료 (2026-11-09)**. PRD 9장 완료 기준 38개(2026-11-10 Organization 1개 추가) 중 37개 확인, 1개(GA4 실시간 보고서)는 측정 ID가 있어야 확인 가능. **2026-11-11 PRD v4(GTM 전환)로 완료 기준 39개 — 39개 모두 확인 (측정 2개는 사용자가 GTM 미리보기·GA4 실시간 보고서로 확인). GTM 전환 0~5단계 완료, 배포 사이트는 GTM → GA4로 측정 중**. **2026-11-10 GitHub(`yono7391-cell/emotion_drawer`) 공개, Railway 배포 완료** (https://emotiondrawer-production.up.railway.app) |
-| 백업 | `backup/2026-11-09_2단계전/`, `_3단계전/`, `_4단계전/`, `backup/2026-11-10_배포전/`, `_구조화데이터전/`, `backup/2026-11-11_GTM전/` |
+| **현재 진행** | **PLAN.md 1~4단계 모두 완료 (2026-11-09)**. PRD 9장 완료 기준 38개(2026-11-10 Organization 1개 추가) 중 37개 확인, 1개(GA4 실시간 보고서)는 측정 ID가 있어야 확인 가능. **2026-11-11 PRD v4(GTM 전환)로 완료 기준 39개 — 39개 모두 확인 (측정 2개는 사용자가 GTM 미리보기·GA4 실시간 보고서로 확인). GTM 전환 0~5단계 완료, 배포 사이트는 GTM → GA4로 측정 중**. **2026-11-10 GitHub(`yono7391-cell/emotion_drawer`) 공개, Railway 배포 완료** (https://emotiondrawer-production.up.railway.app). **2026-11-16 AEO/SEO 점검 → PRD v5(검색 노출 관리 F10, 완료 기준 46개) 작성·로컬 구현 완료. 46개 중 45개 로컬 확인, 1개(Search Console)는 배포 후 사용자 작업. 배포는 아직 (커밋·푸시 전)** |
+| 백업 | `backup/2026-11-09_2단계전/`, `_3단계전/`, `_4단계전/`, `backup/2026-11-10_배포전/`, `_구조화데이터전/`, `backup/2026-11-11_GTM전/`, `backup/2026-11-16_SEO전/` |
 | DB 상태 | 감정 12개·욕구 8개만 있음. 사용자·기록 0건 (점검용 계정은 모두 삭제함) |
 
 ### 다음에 할 수 있는 일 (모두 선택 사항, 사용자 결정 필요)
 
+0. **PRD v5 F10 배포** (작업 기록 ㉑·㉒, 로컬 구현 완료): 커밋·푸시 → 배포 주소에서 `/robots.txt`·`/sitemap.xml` 200, canonical https 확인 → 사용자가 Search Console 등록(URL 접두어 속성, GTM 방식 인증)·사이트맵 제출 → Schema Markup Validator로 랜딩 JSON-LD 3개 오류 0 확인
 1. (참고) **GTM 전환은 0~5단계 모두 완료** (작업 기록 ⑮~⑲). 측정을 바꾸려면 코드가 아니라 GTM 컨테이너(태그·트리거·변수)를 고치고 게시한다. 로컬 `.env`에도 컨테이너 ID가 있어 로컬 테스트 데이터가 GA4에 들어감 — 원하지 않으면 로컬 값만 비움
 2. **공개 배포** (D8에서 나중으로 미룸): 배포 전 위기 상담 번호 재확인, `FLASK_DEBUG=0`, 분석 쿠키 동의 배너 재검토
 3. 실제 엑셀에서 CSV 열어 보기 (자동 점검에서는 BOM과 줄 수만 확인)
@@ -38,7 +39,7 @@ agm_last_project/
 ├─ WORKLOG.md          ← 이 문서
 ├─ CLAUDE.md           프로젝트 규칙 (Claude Code가 자동으로 읽음)
 ├─ PLAN.md             4단계 구현 계획, 단계별 완료 기준 대조표
-├─ PRD/                감정서랍_PRD_v1·v2·v3.md (판을 올릴 때 새 파일로, 지금 기준은 v3)
+├─ PRD/                감정서랍_PRD_v1~v5.md (판을 올릴 때 새 파일로, 지금 기준은 v5)
 ├─ backup/             단계 시작 전 백업
 ├─ .claude/launch.json Claude 앱 미리보기 서버 설정
 └─ emotion_drawer/
@@ -112,6 +113,7 @@ agm_last_project/
 | GTM 이벤트 태그 매개변수 | 태그마다 그 이벤트의 매개변수만 연결 | `dataLayer`는 앞서 넣은 값을 기억해서, 모든 태그에 6개를 다 연결하면 예전 값(예: `from_try`)이 다른 이벤트에 섞여 나감 |
 | 측정 설정 값 위치 | GTM 컨테이너 ID는 `.env`·Railway 변수에만, GA4 측정 ID는 GTM 컨테이너 안에만 | 코드 수정 없이 바꾸거나 끄기 위해. 로컬은 비워 두면 테스트 데이터가 GA4에 섞이지 않음 |
 | UTM medium 값 | 워크북 예시의 `content`·`crm` 대신 `paid_social`·`referral`·`email` | GA4 기본 채널 그룹이 아는 값이라 Paid Social·Referral·Email로 자동 분류됨 (`content`·`crm`은 Unassigned) |
+| 검색 노출 (PRD v5) | 공개 화면 5개(`/`·`/try`·`/help`·`/privacy`·`/terms`)만 색인, 나머지는 `noindex`. robots.txt는 로그인 필요 경로만 막고 `/login`·`/signup`은 막지 않음. `WebApplication` 구조화 데이터는 넣지 않음. Search Console은 URL 접두어 + GTM 방식 | robots.txt로 막으면 `noindex`를 못 읽음. 실제 평점이 없고 Plus는 결제할 수 없음. `up.railway.app`는 DNS 설정 불가, GTM 스니펫이 이미 있어 코드 수정 없이 인증 (PRD v5 10-4) |
 | UTM 링크 도착 주소 | 모든 채널을 랜딩(`/`)으로 | 로그인 필요 화면(`/drawer`·`/reflect`)은 로그인이 풀린 사람을 로그인 화면으로 넘기면서 주소의 `?utm_...`이 빠짐 (`next`에 경로만 넣음). 랜딩은 로그인 여부와 상관없이 UTM 주소 그대로 열리고, 로그인한 사람은 [내 서랍 열기](`cta_click` `hero_drawer`)로 이어짐 |
 
 ### 2-3. 구현 중 새로 쓴 문구 → PRD v3에 반영 완료
@@ -311,3 +313,21 @@ agm_last_project/
 
   - 완성 링크 = 배포 주소 `/` + `?utm_source=…&utm_medium=…&utm_campaign=…`
 - 확인: 세 링크 모두 배포 사이트에서 200, 리다이렉트 없음, 랜딩·GTM 스니펫 정상 (curl). GA4 채널 분류는 테스트 방문이 기록에 남아 확인하지 않음 (0장 다음 할 일 5번)
+
+### 2026-11-16 ㉑ AEO/SEO 기술 점검과 PRD v5 (문서만, 코드 변경 없음)
+
+- 점검(배포 주소에 직접 요청 + 코드 확인): 메인 200·title·description·og 정상, **canonical 없음(모든 화면)**, robots 메타 없음 / **`/robots.txt`·`/sitemap.xml` 404** (robots.txt가 없으면 모두 허용이라 Googlebot·OAI-SearchBot은 막혀 있지 않음, 두 UA로 `/` 200) / 랜딩 h1·h2·4단계 설명·요금·FAQ 8개 답변이 자바스크립트 없이 초기 HTML에 있음 / 로그인 필요 화면 6개(`/drawer`, `/drawer/1`, `/drawer/new`, `/reflect`, `/settings`, `/settings/export`)는 로그인 화면으로 302, 내용 노출 없음. 코드도 GET 경로 모두 `login_required`, `/drawer/import-try`는 401 / **`/login`·`/signup`·`/login?next=…`은 색인 가능** / `/try`·`/help`·`/privacy`·`/terms`·`/login`·`/signup`이 같은 기본 meta description
+- 만든 것: `PRD/감정서랍_PRD_v5.md` (v4를 복사해 수정). 문서 정보, 'v5 변경 요약' S1~S8, 1-4 범위, F1-11 `WebSite`, **F10 검색 노출 관리 신설(F10-1~8)**, 6장 개인정보, 9장 '검색 노출 (v5)' 7개(완료 기준 39 → 46개), 10-4 결정 표, 11-1 meta description 4개
+- 고친 것: CLAUDE.md·PLAN.md 기준 문서를 v5로, WORKLOG 0장·1장·2-2
+- 사용자 확인 필요: 11-1의 (v5) meta description 4개는 Claude가 쓴 초안
+- 코드·DB·배포는 그대로 (v5 구현은 다음 단계, 시작 전 `backup/날짜_SEO전/` 백업)
+
+### 2026-11-16 ㉒ PRD v5 F10 검색 노출 구현 (로컬 완료, 배포 전)
+
+- 백업: `backup/2026-11-16_SEO전/`
+- 사용자가 PRD v5 11-1 meta description 4개 문구를 그대로 확정
+- 만든 것: `pages.py` `/robots.txt`(text/plain, `User-agent: *`·`Allow: /`·`Disallow` 3개·`Sitemap:`), `/sitemap.xml`(공개 화면 5개, lastmod 없음), 색인 대상 목록 `INDEXABLE_ENDPOINTS`·`PRIVATE_PATHS` / `app.py` 템플릿 값 `seo_indexable` / `base.html` `seo` 블록: canonical `request.base_url`(주소 뒤 값 없음), 색인 대상이 아니면 `noindex` / `errors/404.html`·`500.html` `seo` 블록을 바꿔 canonical 없이 `noindex` / `content.py` `PAGE_DESCRIPTIONS`, `website_jsonld()` / `help`·`privacy`·`terms`·`write`(체험일 때만) description 블록 / `landing.html` WebSite JSON-LD / `tests/check_seo.py` (44개)
+- 사이트 주소는 모두 접속한 주소로 만듦 (og:url과 같은 방식, 배포에서는 `TRUST_PROXY`로 https)
+- 확인: 서버 점검 45·41개 통과, `check_seo.py` 44개 통과(https 주소로 요청, 임시 DB로 로그인 화면 `/drawer`·`/drawer/new`·`/reflect`·`/settings`·없는 기록 404까지 noindex 확인), PRD 11-1 문구와 `content.py` 문구 일치 / 브라우저(로컬): 랜딩 canonical, JSON-LD Organization·WebSite·FAQPage, robots.txt 내용, sitemap XML, `/login?next=/drawer`·`/signup` noindex, `/try?utm_source=x` canonical `/try`, 404 noindex·canonical 없음, 랜딩 화면 그대로
+- PRD v5 9장 검색 노출 7개 중 6개 로컬 확인 (Schema Markup Validator는 배포 주소로 다시 확인 필요), Search Console은 배포 후 사용자 작업
+- 로컬 DB는 건드리지 않음 (점검은 임시 DB, 브라우저에서는 가입하지 않음)

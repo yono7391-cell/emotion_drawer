@@ -6,7 +6,7 @@
 ## 문서
 
 - **작업 로그·인수인계: `WORKLOG.md` (새 대화나 다른 AI는 이 문서부터 읽을 것)**
-- 요구사항: `PRD/감정서랍_PRD_v4.md` (v1~v3는 참고용 이전 판, v4는 측정 설치를 GTM으로 바꾼 판). 화면 문구 전체 목록은 11장
+- 요구사항: `PRD/감정서랍_PRD_v5.md` (v1~v4는 참고용 이전 판, v4는 측정 설치를 GTM으로 바꾼 판, v5는 검색 노출 관리(F10)를 더한 판). 화면 문구 전체 목록은 11장
 - 구현 계획: `PLAN.md`
 - 원본 기획서: `감정서랍_브랜드_성장전략_통합기획2.md` (로컬에만 보관, 저장소에는 올리지 않음)
 
@@ -35,7 +35,7 @@ python app.py
 
 ## 프로젝트 공통 규칙
 
-- 요구사항의 기준은 `PRD/감정서랍_PRD_v4.md`다. PRD에 없는 기능은 만들지 말고 먼저 물어볼 것.
+- 요구사항의 기준은 `PRD/감정서랍_PRD_v5.md`다. PRD에 없는 기능은 만들지 말고 먼저 물어볼 것.
 - 웹 서버는 Python Flask로 만든다. 웹앱은 `emotion_drawer` 폴더, 포트 5000.
 - 화면은 Jinja 템플릿 + 순수 CSS·JavaScript로 만든다. npm 같은 빌드 도구는 쓰지 않는다.
 - 데이터베이스는 SQLite 파일 하나만 쓴다. 로컬은 `emotion_drawer/emotion_drawer.db`, 배포(Railway)는 `DATABASE_PATH`로 지정한 Volume 안의 파일(`/data/emotion_drawer.db`). 테이블 구조는 PRD 5장을 따른다.

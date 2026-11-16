@@ -11,6 +11,7 @@
 {% set selected = (E.emotions or [])|map(attribute='code')|list %}
 
 {% block title %}{{ c.CTA_TRY if mode == "try" else (c.DRAWER.edit if mode == "edit" else c.DRAWER.new) }} — 감정서랍{% endblock %}
+{% block description %}{% if mode == "try" %}{{ C.PAGE_DESCRIPTIONS['try'] }}{% else %}{{ super() }}{% endif %}{% endblock %}
 
 {% block content %}
 <section class="write" aria-label="감정 기록">

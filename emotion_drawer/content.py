@@ -14,6 +14,16 @@ META_DESCRIPTION = (
     "내 마음을 어떻게 표현해야 할지 막막할 때, 상황 → 생각 → 감정 → 욕구 4단계 질문으로 "
     "오늘의 감정을 기록하고 나를 더 깊이 이해해 보세요."
 )
+# PRD v5 11-1 (F10-5): 색인 대상 화면별 meta description (랜딩은 위 META_DESCRIPTION)
+PAGE_DESCRIPTIONS = {
+    "try": (
+        "가입하지 않아도 감정 하나를 골라 상황 → 생각 → 감정 → 욕구 4단계로 오늘의 마음을 적어 볼 수 있어요. "
+        "쓴 내용은 이 브라우저에만 잠시 보관돼요."
+    ),
+    "help": "혼자 견디기 어려운 마음이 들 때 연락할 수 있는 상담 전화를 안내해요.",
+    "privacy": "감정서랍이 수집하는 정보와 이용 목적, 보관과 삭제 방법을 안내해요.",
+    "terms": "감정서랍의 서비스 성격, 계정, 요금, 기록의 권리를 안내해요.",
+}
 
 # ── F1-2 히어로 (PRD) ──────────────────────────────────────────
 HERO_TITLE = "마음을 꺼내, 나를 알아가다."
@@ -300,4 +310,15 @@ def organization_jsonld(site_url: str, logo_url: str) -> dict:
         "description": ONE_LINER,
         "logo": logo_url,
         "slogan": HERO_TITLE,
+    }
+
+
+def website_jsonld(site_url: str) -> dict:
+    """PRD v5 F1-11·F10-6: 검색 결과의 사이트 이름용 WebSite 구조화 데이터.
+    사이트 안 검색 기능이 없으므로 potentialAction(SearchAction)은 넣지 않는다."""
+    return {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": SERVICE_NAME,
+        "url": site_url,
     }

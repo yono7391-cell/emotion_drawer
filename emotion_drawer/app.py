@@ -69,6 +69,8 @@ def create_app() -> Flask:
             "ga_events": session.pop("ga_events", []),
             "clear_drafts": session.pop("clear_drafts", []),
             "C": content,
+            # PRD v5 F10-4: 색인 대상 공개 화면인지 (아니면 base.html이 noindex를 넣는다)
+            "seo_indexable": request.endpoint in pages.INDEXABLE_ENDPOINTS,
         }
 
     @app.errorhandler(CSRFError)
