@@ -162,6 +162,7 @@
 
         <div class="write__actions write__actions--stack">
           {% if mode == "try" %}
+          <p class="write__keep-note">{{ W.try_keep_note }}</p>
           <a class="btn btn--primary btn--lg" href="{{ url_for('auth.signup', **{'from': 'try'}) }}" data-action="keep">{{ W.try_keep }}</a>
           <button type="button" class="btn btn--ghost" data-action="restart">{{ W.try_again }}</button>
           <button type="button" class="btn btn--ghost" data-action="close">{{ W.try_close }}</button>
