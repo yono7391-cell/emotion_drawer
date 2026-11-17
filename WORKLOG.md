@@ -17,7 +17,7 @@
 | 원본 기획서 | `감정서랍_브랜드_성장전략_통합기획2.md` (ChatGPT로 작성, 로컬에만 보관, 저장소에는 올리지 않음) |
 | 기술 | Python 3.14.5, Flask 3.1.3, Flask-WTF 1.3.0(CSRF), python-dotenv, tzdata, SQLite, Jinja + 순수 CSS·JS (빌드 도구 없음) |
 | 실행 | `emotion_drawer/run.bat` 더블클릭 → http://localhost:5000 (Claude 앱에서는 `.claude/launch.json`의 `emotion-drawer`) |
-| **현재 진행** | **PLAN.md 1~4단계 모두 완료 (2026-11-09)**. PRD 9장 완료 기준 38개(2026-11-10 Organization 1개 추가) 중 37개 확인, 1개(GA4 실시간 보고서)는 측정 ID가 있어야 확인 가능. **2026-11-11 PRD v4(GTM 전환)로 완료 기준 39개 — 39개 모두 확인 (측정 2개는 사용자가 GTM 미리보기·GA4 실시간 보고서로 확인). GTM 전환 0~5단계 완료, 배포 사이트는 GTM → GA4로 측정 중**. **2026-11-10 GitHub(`yono7391-cell/emotion_drawer`) 공개, Railway 배포 완료** (https://emotiondrawer-production.up.railway.app). **2026-11-16 AEO/SEO 점검 → PRD v5(검색 노출 관리 F10, 완료 기준 46개) 작성·구현·배포 완료 (커밋 `0d055d2`). 46개 중 44개 확인. Search Console 등록·사이트맵 제출·`/` 색인 요청 완료(사용자) — 사이트맵 상태 '성공'과 Schema Markup Validator 재검사가 남음**. **2026-11-17 성장 대시보드 가설 H1 검증: PRD v6(체험 마무리 [서랍에 보관하기] 위 안내 문구, 완료 기준 47개) 작성·구현. 11-18~11-19 회원가입률(시작 대비) 61% → 75% 이상인지 확인 예정** |
+| **현재 진행** | **PLAN.md 1~4단계 모두 완료 (2026-11-09)**. PRD 9장 완료 기준 38개(2026-11-10 Organization 1개 추가) 중 37개 확인, 1개(GA4 실시간 보고서)는 측정 ID가 있어야 확인 가능. **2026-11-11 PRD v4(GTM 전환)로 완료 기준 39개 — 39개 모두 확인 (측정 2개는 사용자가 GTM 미리보기·GA4 실시간 보고서로 확인). GTM 전환 0~5단계 완료, 배포 사이트는 GTM → GA4로 측정 중**. **2026-11-10 GitHub(`yono7391-cell/emotion_drawer`) 공개, Railway 배포 완료** (https://emotiondrawer-production.up.railway.app). **2026-11-16 AEO/SEO 점검 → PRD v5(검색 노출 관리 F10, 완료 기준 46개) 작성·구현·배포 완료 (커밋 `0d055d2`). 46개 중 44개 확인. Search Console 등록·사이트맵 제출·`/` 색인 요청 완료(사용자) — 사이트맵 상태 '성공'과 Schema Markup Validator 재검사가 남음**. **2026-11-17 성장 대시보드 가설 H1 검증: PRD v6(체험 마무리 [서랍에 보관하기] 위 안내 문구, 완료 기준 47개) 작성·구현·배포(커밋 `8c3c35d`). 11-18~11-19 회원가입률(시작 대비) 61% → 75% 이상인지 확인 예정** |
 | 백업 | `backup/2026-11-09_2단계전/`, `_3단계전/`, `_4단계전/`, `backup/2026-11-10_배포전/`, `_구조화데이터전/`, `backup/2026-11-11_GTM전/`, `backup/2026-11-16_SEO전/`, `backup/2026-11-17_H1문구전/` |
 | DB 상태 | 감정 12개·욕구 8개만 있음. 사용자·기록 0건 (점검용 계정은 모두 삭제함) |
 
@@ -352,4 +352,5 @@ agm_last_project/
 - 만든 것: `PRD/감정서랍_PRD_v6.md` (v5를 복사해 수정). 문서 정보, 'v6 변경 요약' T1·T2와 H1 근거, F2-9, 9장 체험 1개(완료 기준 46 → 47개), 11-3 문구 1줄
 - 고친 것: `content.py` `WRITE["try_keep_note"]` / `templates/write.html` 체험(`mode == "try"`)일 때만 [서랍에 보관하기] 위에 `<p class="write__keep-note">` / `style.css` `.write__keep-note`(작은 글자·보조 색·가운데) / CLAUDE.md·PLAN.md·WORKLOG 기준 문서 v6
 - 확인(로컬 브라우저): `/try` 4단계 → 마무리 화면에서 문구가 버튼 바로 위에 보이고 PRD 11-3과 글자 같음, 375px에서 가로 스크롤 없음, 콘솔 오류 없음. 회원 작성·수정 화면은 템플릿 조건(`mode == "try"`)으로 제외 (로그인해 직접 보지는 않음)
+- 배포: 커밋 `8c3c35d` 푸시 → 약 40초 뒤 배포 주소에 반영. 배포 `/try` HTML에 문구 1줄, CSS에 `.write__keep-note`, `/` 200 확인 (2026-11-17)
 - 검증 계획: 바꾸기 전 11-16~11-17 vs 바꾼 후 11-18~11-19, 성공 기준 회원가입률(시작 대비) 75% 이상 (0장 다음 할 일 0번)
